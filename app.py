@@ -11,8 +11,25 @@ def main():
 @app.route('/getMapData', methods=['POST'])
 def getMapData():
 	# read the tokyo.txt file
-	raw_string = read_data()
-	return jsonify(data=raw_string)
+	points, vertices = read_data()
+
+	synthesized_vertices = []
+
+	for vertex in vertices:
+		item = {
+			'type': vertex['type'],
+			'start' : {
+				'lat' : points[vertex['start']]['lat'],
+				'lng' : points[vertex['start']]['lng']
+			},
+			'end' : {
+				'lat' : points[vertex['end']]['lat'],
+				'lng' : points[vertex['end']]['lng']
+			}
+		}
+		synthesized_vertices.append(item)
+		
+	return jsonify(data=synthesized_vertices)
 
 if __name__ == '__main__':
 	app.run()

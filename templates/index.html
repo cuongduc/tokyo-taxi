@@ -63,6 +63,27 @@
 				})
 				.success(function(response) {
 					for (var i = 0; i < response.data.length; i++) {
+						var segmentCoor = [];
+						var start = {
+							lat: response.data[i].start.lat,
+							lng: response.data[i].start.lng,
+						}
+						segmentCoor.push(start);
+						var end = {
+							lat: response.data[i].end.lat,
+							lng: response.data[i].end.lng,
+						}
+						segmentCoor.push(end);
+
+						var segment = new google.maps.Polyline({
+							path: segmentCoor,
+							geodesic: true,
+							strokeColor: '#ff8f00',
+							strokeOpacity: 1.0,
+							strokeWeight: 1
+						});
+
+						segment.setMap(map);
 						// var pathCoordinates = [response.data[i]];
 						// var linePath = new google.maps.Polyline({
 						// 	path: pathCoordinates,
@@ -73,18 +94,19 @@
 						// });
 
 						// linePath.setMap(map);
-						initialRoutesCoordinates[i] = response.data[i];
+						// initialRoutesCoordinates[i] = response.data[i];
+						// console.log(response.data[i]);
 					}
 
-					initPath = new google.maps.Polyline({
-						path: initialRoutesCoordinates,
-						geodesic: true,
-					    strokeColor: '#FF0000',
-					    strokeOpacity: 1.0,
-					    strokeWeight: 1
-					});
+					// initPath = new google.maps.Polyline({
+					// 	path: initialRoutesCoordinates,
+					// 	geodesic: true,
+					//     strokeColor: '#FF0000',
+					//     strokeOpacity: 1.0,
+					//     strokeWeight: 1
+					// });
 
-					initPath.setMap(map);
+					// initPath.setMap(map);
 				})
 				.error(function(response) {
 					console.log('error', response);

@@ -1,6 +1,24 @@
 from data_parser import read_data
 import json
 
-raw_string = read_data()
+points, vertices = read_data()
 
-print(json.dumps(raw_string))
+
+synthesized_vertices = []
+
+for vertex in vertices:
+	item = {
+		'type': vertex['type'],
+		'start' : {
+			'lat' : points[vertex['start']]['lat'],
+			'lng' : points[vertex['start']]['lng']
+		},
+		'end' : {
+			'lat' : points[vertex['end']]['lat'],
+			'lng' : points[vertex['end']]['lng']
+		}
+	}
+
+	synthesized_vertices.append(item)
+
+print(json.dumps(synthesized_vertices))
