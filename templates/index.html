@@ -10,17 +10,57 @@
 	<style>
 		#map {
 			display: block;
-			width: 	100%;
-			height: 100%;
 			position: fixed;
 			top: 0;
 			bottom: 0;
 			right: 0;
 			left: 0;
 		}
+
+		.navbar {
+			margin-bottom: 0 !important;
+		}
 	</style>
 </head>
 <body>
+	<div class="container-fluid">
+		<!-- Navbar -->
+		<nav class="navbar navbar-default navbar-fixed-top">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-navbar" aria-expanded="false">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a href="" class="navbar-brand">Tokyo Taxi</a>
+				</div>
+
+				<div class="collapse navbar-collapse" id="main-navbar">
+					<ul class="nav navbar-nav">
+
+						<li>
+							<form action="/directions" class="navbar-form navbar-left">
+								<div class="form-group">
+									<label for="request">Chọn request</label>
+									<select name="request" id="request" class="form-control">
+										<option value="3">3</option>	
+										<option value="6">6</option>	
+										<option value="10">10</option>	
+										<option value="17">17</option>	
+										<option value="18">18</option>	
+									</select>
+								</div>
+								<button type="button" id="getDirectionButton" class="btn btn-success">Tim duong</button>
+							</form>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		<!-- Content -->
+	</div>
 	<div id="map">
 	</div>
 
@@ -30,14 +70,16 @@
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAZvsz4xVC_W_xSnw9jFuygggEl8DwHrb0&callback=initMap" async defer></script>
 	<script>
 		var container = document.getElementById('map')
-		var map;
+		var map, forward, backward;
 		var initialRoutesCoordinates = [];
 		var initPath = null;
 
+		var button = $('#getDirectionButton');
+
 		function initMap() {
 			map = new google.maps.Map(container, {
-				center: {lat: 35.409200000000006, lng: 139.0},
-				zoom: 12,
+				center: {lat: 35.6688687, lng: 139.7524835},
+				zoom: 11,
 				mapTypeId: google.maps.MapTypeId.ROADMAP
 			});
 		}
@@ -84,29 +126,7 @@
 						});
 
 						segment.setMap(map);
-						// var pathCoordinates = [response.data[i]];
-						// var linePath = new google.maps.Polyline({
-						// 	path: pathCoordinates,
-						// 	geodesic: true,
-						//     strokeColor: '#FF0000',
-						//     strokeOpacity: 1.0,
-						//     strokeWeight: 1
-						// });
-
-						// linePath.setMap(map);
-						// initialRoutesCoordinates[i] = response.data[i];
-						// console.log(response.data[i]);
 					}
-
-					// initPath = new google.maps.Polyline({
-					// 	path: initialRoutesCoordinates,
-					// 	geodesic: true,
-					//     strokeColor: '#FF0000',
-					//     strokeOpacity: 1.0,
-					//     strokeWeight: 1
-					// });
-
-					// initPath.setMap(map);
 				})
 				.error(function(response) {
 					console.log('error', response);
@@ -117,6 +137,78 @@
 			getMapData();
 			$(window).resize(function() {
 				fitMap();
+			});
+
+			button.click(function(e){
+
+				if (forward && backward) {
+					forward.setMap(null);
+					backward.setMap(null);
+				}
+
+				e.preventDefault();
+				var id = $('#request').val();
+				var url = '/directions';
+
+				$.ajax({
+					url: url,
+					type: 'POST',
+					data: {
+						request: id
+					}
+				})
+				.success(function(response) {
+
+					if (response) {
+						var forwardCoor = [];
+
+						for (var i = 0; i < response.data.forward.length; i++) {
+							forwardCoor.push({
+								lat: response.data.forward[i].lat,
+								lng: response.data.forward[i].lng
+							});
+						}
+
+						forward = new google.maps.Polyline({
+							path: forwardCoor,
+							geodesic: true,
+							strokeColor: '#000000',
+							strokeOpacity: 1.0,
+							strokeWeight: 10
+						});
+
+						map.setCenter(forwardCoor[1]);
+						forward.setMap(map);
+
+
+						var backwardCoor = [];
+
+						for (var j = 0; j < response.data.backward.length; j++) {
+							backwardCoor.push({
+								lat: response.data.backward[j].lat,
+								lng: response.data.backward[j].lng
+							});
+						}
+
+
+						backward = new google.maps.Polyline({
+							path: backwardCoor,
+							geodesic: true,
+							strokeColor: '#1565C0',
+							strokeOpacity: 1.0,
+							strokeWeight: 6
+						});
+
+						backward.setMap(map);
+
+						map.setZoom(16);
+
+					}
+				})
+				.error(function() {
+					console.log('error');
+				})
+
 			})
 		});
 	</script>

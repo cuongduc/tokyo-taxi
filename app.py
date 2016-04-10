@@ -1,15 +1,26 @@
 from flask import Flask, render_template, jsonify, request
-
-from data_parser import read_data
+from data_parser import read_data, read_request_data
+import copy
 
 app = Flask(__name__)
+
+# Define some terminated constant
+NEW_TAXI_ROUTE = '=='
+END_TAXI_FILE = '-->'
+
 
 @app.route('/')
 def main():
 	return render_template("index.html")
 
+
+@app.route('/home')
+def home():
+	return render_template("home.html")
+
+
 @app.route('/getMapData', methods=['POST'])
-def getMapData():
+def get_map_data():
 	# read the tokyo.txt file
 	points, vertices = read_data()
 
@@ -31,5 +42,14 @@ def getMapData():
 		
 	return jsonify(data=synthesized_vertices)
 
+
+@app.route('/directions', methods=['POST'])
+def get_directions_for_request():
+	rid = request.form['request']
+	rid = int(rid)
+	r = read_request_data(rid)
+	return jsonify(data=r)
+
 if __name__ == '__main__':
+	app.debug = True
 	app.run()
