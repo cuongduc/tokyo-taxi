@@ -10,59 +10,144 @@
 	<style>
 		#map {
 			display: block;
-			position: fixed;
-			top: 0;
-			bottom: 0;
-			right: 0;
-			left: 0;
+			position: absolute;
+			width: 100%;
+			height: 100%;
 		}
 
 		.navbar {
 			margin-bottom: 0 !important;
 		}
+
+		.clearfix {
+			clear: both;
+		}
+		
+		.navbar {
+			border: none;
+			border-radius: none;
+			background-color: #FF9800;
+		}
+
+		a.navbar-brand {
+			text-transform: uppercase;
+			font-weight: bold;
+			text-shadow: 0px 2px 2px rgba(0,0,0,0.13);
+			font-size: 20px;
+			color: #fff !important;
+			padding-top: 5px !important;
+		}
+
+		.logo {
+			display: inline-block !important;
+			max-height: 50px;
+			width: auto;
+		}
 	</style>
 </head>
 <body>
-	<div class="container-fluid">
-		<!-- Navbar -->
-		<nav class="navbar navbar-default navbar-fixed-top">
-			<div class="container">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-navbar" aria-expanded="false">
-						<span class="sr-only">Toggle navigation</span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-					<a href="" class="navbar-brand">Tokyo Taxi</a>
+	<div class="container-fluid" id="bar">
+		<div class="row">
+			<div class="col-md-3" style="background-color: #B2DFDB;">
+				<div class="row">
+					<!-- Navbar -->
+					<nav class="navbar navbar-default">
+						<div class="container">
+							<div class="navbar-header">
+								<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-navbar" aria-expanded="false">
+									<span class="sr-only">Toggle navigation</span>
+									<span class="icon-bar"></span>
+									<span class="icon-bar"></span>
+									<span class="icon-bar"></span>
+								</button>
+								<a href="" class="navbar-brand">
+								<img src="http://makhuyenmaiuber.com/uploads/news/20150930082926.png" alt="" class="img-responsive logo">
+								Tokyo Taxi
+								
+								</a>
+							</div>
+						</div>
+					</nav>
 				</div>
 
-				<div class="collapse navbar-collapse" id="main-navbar">
-					<ul class="nav navbar-nav">
+				<div class="row" id="search" style="display:block;">
+					<form action="/directions" class="form">
+						<div class="form-group">
+							<label for="">Điểm đầu</label>
+							<input type="text" class="form-control" value="Vị trí của bạn">
+						</div>
+						<div class="form-group">
+							<label for="request">Điểm đến</label>
+							<select name="request" id="request" class="form-control">
+								<option value="3">3</option>	
+								<option value="6">6</option>	
+								<option value="10">10</option>	
+								<option value="17">17</option>	
+								<option value="18">18</option>	
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="time">Thời gian</label>
+							<input type="date" name="time" class="form-control">
+						</div>
+						<div class="form-group">
+							<label for="note">Ghi chú</label>
+							<textarea name="note" id="note" cols="30" rows="5" class="form-control" placeholder="Nếu bạn có yêu cầu đặc biệt gì, vui lòng viết tại đây!"></textarea>
+						</div>
+						<button type="button" id="getDirectionButton" class="btn btn-success">Tìm đường</button>
+					</form>
+				</div>
 
+				<div class="row" id="result" style="display: none;">
+					<ul class="list-group">
 						<li>
-							<form action="/directions" class="navbar-form navbar-left">
-								<div class="form-group">
-									<label for="request">Chọn request</label>
-									<select name="request" id="request" class="form-control">
-										<option value="3">3</option>	
-										<option value="6">6</option>	
-										<option value="10">10</option>	
-										<option value="17">17</option>	
-										<option value="18">18</option>	
-									</select>
-								</div>
-								<button type="button" id="getDirectionButton" class="btn btn-success">Tim duong</button>
-							</form>
+							<h3><span class="label label-success" id="notification">Chúc mừng bạn đã lên đường</span></h3>
+						</li>
+						<li class="list-group-item" id="route-cost">
+							<h3>Giá: <strong style="color:#e5002b;">45.000 VNĐ</strong></h3>
+							<h3 style="text-align:center; color:orange;">Tiết kiệm <strong id="saving"></strong></h3>
+							<p>Thời gian đón: <strong id="pick-time"></strong></p>
+							<p>Thời gian đến: <strong id="arrive-time"></strong></p>
+							<p>Quãng đường: <strong id="route-distance"></strong></p>
+
+						</li>
+						<li class="list-group-item" id="taxi-info">
+							<h5><strong>Thông tin xe</strong></h5>
+							<p>Biển số taxi: <strong>29A - 203.68</strong></p>
+							<p>Tên tài xế: <strong>Phạm Duy Hưng</strong></p>
+							<p>Số điện thoại: <strong>098 560 2528</strong></p>
+							<p>Rarting: <img src="http://styleangel.ie/wp-content/uploads/2013/04/3060.5star.png-610x0.png" style="height: 25px; width: auto;" alt=""></p>
+							<p class="pull-right">
+
+								<a href=""><small>Xem đánh giá</small></a>
+							</p>
+							<div class="clearfix"></div>
+						</li>
+						<li class="list-group-item" id="parcel-info">
+							<h5><strong>Hàng hóa : <span class="parcel-id">3</span></strong></h5>
+							<ul>
+								<li>Thực phẩm</li>
+								<li>Đồ điện tử</li>
+							</ul>
+
+						</li>
+						<li class="list-group-item">
+							<button type="button" class="btn btn-success" id="go">Lên xe</button>
+
+							<button type="button" class="btn btn-default" id="back-to-search">Quay lại</button>
 						</li>
 					</ul>
 				</div>
 			</div>
-		</nav>
+			<div class="col-md-9" id="map-container">
+				<div id="map">
+				</div>
+			</div>
+		</div>
+		
 		<!-- Content -->
 	</div>
-	<div id="map">
-	</div>
+
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
 	<!-- Latest compiled and minified JavaScript -->
@@ -71,19 +156,49 @@
 	<script>
 		var container = document.getElementById('map')
 		var map, forward, backward;
+		var routes;
 		var initialRoutesCoordinates = [];
 		var initPath = null;
 
 		var button = $('#getDirectionButton');
+		var backToSearch = $('#back-to-search');
+		var goButton  = $('#go');
+
+		var forwardCoor = [];
+		var backwardCoor = [];
+
+		var dt = new Date();
+
+		var randomSaving = function() {
+			var e = $('#saving');
+			var val = Math.round(Math.random(25, 60) * 100 * 100) / 100;
+
+			e.text(val + '%');
+		}
 
 		function initMap() {
 			map = new google.maps.Map(container, {
 				center: {lat: 35.6688687, lng: 139.7524835},
 				zoom: 11,
-				mapTypeId: google.maps.MapTypeId.ROADMAP
+				mapTypeId: google.maps.MapTypeId.ROADMAP,
+				mapTypeControl: true,
+			    mapTypeControlOptions: {
+			        style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+			        position: google.maps.ControlPosition.TOP_CENTER
+			    },
+			    zoomControl: true,
+			    zoomControlOptions: {
+			        position: google.maps.ControlPosition.LEFT_CENTER
+			    },
+			    scaleControl: true,
+			    streetViewControl: true,
+			    streetViewControlOptions: {
+			        position: google.maps.ControlPosition.LEFT_TOP
+			    },
+			    fullscreenControl: true
 			});
 		}
-
+		// Function lấy vị trí google map 
 		/**
 		 * Fit the map to full width and height of the
 		 * browser's content window
@@ -92,11 +207,16 @@
 			var w = window.innerWidth;
 			var h = window.innerHeight;
 
+			var barW = $('#bar').width();
+
 			container.style.width = (w - 1) + 'px';
 			container.style.height = (h - 1) + 'px';
 		}
 
 		$(document).ready(function() {
+			var notification = $('#notification');
+			notification.hide();
+
 			var getMapData = function() {
 				var url = 'getMapData';
 				$.ajax({
@@ -139,11 +259,62 @@
 				fitMap();
 			});
 
+			var setParcelText = function(id) {
+				var ele = $('.parcel-id');
+				ele.text(id);
+			}
+
+			// Show result panel
+			var showHidePanel = function(panel) {
+				var search = $('#search');
+				var result = $('#result');
+
+				if (panel == 'result') {
+					search.css('display', 'none');
+					result.css('display', 'block');
+				} else {
+					search.css('display', 'block');
+					result.css('display', 'none');
+				}
+			}
+
+			// Calculate time
+			var getTime = function() {
+				var dt = new Date();
+				dt.setMinutes(dt.getMinutes() + 10);
+
+				var pickUp = $('#pick-time');
+				pickUp.text(dt.getHours() + ':' + dt.getMinutes() + ':' + dt.getSeconds());
+				
+				// Get time differences of the forward route
+				var len = backwardCoor.length;
+				var start = forwardCoor[0].time;
+				var end = backwardCoor[len-1].time;
+				var diff = end - start;
+				
+				var arriveTime = $('#arrive-time');
+				dt.setSeconds(dt.getSeconds() + diff);
+				arriveTime.text(dt.getHours() + ':' + dt.getMinutes() + ':' + dt.getSeconds());
+			}
+
+			backToSearch.click(function(e) {
+				e.preventDefault();
+				showHidePanel('search');
+			});
+
 			button.click(function(e){
+				showHidePanel('result');
+				randomSaving();
+				goButton.show();
+				notification.hide();
 
 				if (forward && backward) {
 					forward.setMap(null);
 					backward.setMap(null);
+					forwardCoor = [];
+					backwardCoor = [];
+
+					if (routes) {routes.setMap(null); routes = null;}
 				}
 
 				e.preventDefault();
@@ -160,12 +331,13 @@
 				.success(function(response) {
 
 					if (response) {
-						var forwardCoor = [];
+						setParcelText(response.data.id);
 
 						for (var i = 0; i < response.data.forward.length; i++) {
 							forwardCoor.push({
 								lat: response.data.forward[i].lat,
-								lng: response.data.forward[i].lng
+								lng: response.data.forward[i].lng,
+								time: response.data.forward[i].time
 							});
 						}
 
@@ -177,19 +349,16 @@
 							strokeWeight: 10
 						});
 
-						map.setCenter(forwardCoor[1]);
+						map.setCenter(forwardCoor[0]);
 						forward.setMap(map);
-
-
-						var backwardCoor = [];
 
 						for (var j = 0; j < response.data.backward.length; j++) {
 							backwardCoor.push({
 								lat: response.data.backward[j].lat,
-								lng: response.data.backward[j].lng
+								lng: response.data.backward[j].lng,
+								time: response.data.backward[j].time
 							});
 						}
-
 
 						backward = new google.maps.Polyline({
 							path: backwardCoor,
@@ -200,16 +369,81 @@
 						});
 
 						backward.setMap(map);
-
-						map.setZoom(16);
-
+						map.setZoom(15);
+						getTime();
+						
 					}
 				})
 				.error(function() {
 					console.log('error');
 				})
 
-			})
+			});
+
+			// Len xe
+			goButton.click(function(e) {
+				goButton.hide();
+				notification.fadeIn(300);
+				if (routes) routes.setMap(null);
+
+				var intervalCounter = 0;
+				var mapInterval = setInterval(function(){drawForwardPaths();}, 500);
+								
+				var routedPath = new Array();
+
+				// Draw forward paths
+				var drawForwardPaths = function() {
+					// If we have gone through all of itmes, stop
+					if (intervalCounter >= forwardCoor.length) {
+						clearInterval(mapInterval);
+						// callback();
+					} else {
+						var coor = [
+							forwardCoor[intervalCounter],
+							forwardCoor[intervalCounter + 1]
+						];
+
+						routes = new google.maps.Polyline({
+							path: coor,
+							geodesic: true,
+							strokeColor: '#e5002b',
+							strokeOpacity: 1.0,
+							strokeWeight: 12,
+							zIndex: 20
+						});
+						routes.setMap(map);
+						intervalCounter++;
+					}
+				}
+				
+				var startBackward = function() {
+					var backwardInterval = setInterval(function(){drawBackwardPaths();}, 500);
+				}
+
+				// Draw backward paths
+				var drawBackwardPaths = function() {
+					// If we have gone through all of itmes, stop
+					if (intervalCounter >= backwardCoor.length) {
+						clearInterval(backwardInterval);
+					} else {
+						var coor = [
+							backwardCoor[intervalCounter],
+							backwardCoor[intervalCounter + 1]
+						];
+
+						routes = new google.maps.Polyline({
+							path: coor,
+							geodesic: true,
+							strokeColor: '#5cb85c',
+							strokeOpacity: 1.0,
+							strokeWeight: 11,
+							zIndex: 20
+						});
+						routes.setMap(map);
+						intervalCounter++;
+					}
+				}
+			});
 		});
 	</script>
 </body>

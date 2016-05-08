@@ -2,10 +2,12 @@
 import os
 import json
 import copy
+import numpy as np
 
 NEW_TAXI_ROUTE = '=='
 END_TAXI_FILE = '-->'
 
+# Xu ly data, ve ban do
 def read_data():
 	input_file = 'data/reduceGraph2.txt'
 	if not os.path.isfile(input_file):
@@ -44,6 +46,7 @@ def read_data():
 			points.append(item)
 	return points, vertices
 
+# Xu ky request
 def read_request_data(sid):
 	input_file = 'data/output_test.txt'
 
@@ -86,14 +89,16 @@ def read_request_data(sid):
 				flow = 'backward'
 				continue
 			vertex = int(tokens[0])
+			time = float(tokens[1])
 			request[flow].append({
 				'vertex' : vertex,
+				'time'	 : time,
 				'lat'	 : points[vertex]['lat'],
 				'lng'	 : points[vertex]['lng'],
 			})
 
 	f.close()
-
+	
 	for re in requests:
 		if re['id'] == sid:
 			return re

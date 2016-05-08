@@ -3,7 +3,7 @@ import json
 
 # points, vertices = read_data()
 
-dump = read_request_data(3)
+dump = read_request_data(10)
 print(dump)
 
 # synthesized_vertices = []
