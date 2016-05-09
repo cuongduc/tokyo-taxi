@@ -48,7 +48,7 @@ def read_data():
 
 # Xu ky request
 def read_request_data(sid):
-	input_file = 'data/output_test.txt'
+	input_file = 'data/outputByTime_05_09_08_43_58.txt'
 
 	if not os.path.isfile(input_file):
 		return False
@@ -67,6 +67,8 @@ def read_request_data(sid):
 		line = line.replace('\n', '')
 		line = line.replace('\r', '')
 		tokens = line.split(' ')
+		print(tokens)
+
 		if tokens[0] == NEW_TAXI_ROUTE:
 			continue
 
@@ -74,15 +76,25 @@ def read_request_data(sid):
 			requests.append(request)
 			break
 
-		if 'R+' in tokens[0]:
+		if 'R+' in tokens[0]:			
 			if request:
 				requests.append(request)
 			flow = 'forward'
 			rid = int(tokens[1])
-			request = {
-				'id' : rid,
-				'forward' : [],
-				'backward' : []
+
+			if tokens[2] == 'true':
+				request = {
+					'id' : rid,
+					'forward' : [],
+					'backward' : [],
+					'type':'people'
+				}
+			else:
+				request = {
+					'id' : rid,
+					'forward' : [],
+					'backward' : [],
+					'type':'parcel'
 				}
 		else:
 			if 'R-' in tokens[0]:
@@ -95,7 +107,7 @@ def read_request_data(sid):
 				'time'	 : time,
 				'lat'	 : points[vertex]['lat'],
 				'lng'	 : points[vertex]['lng'],
-			})
+			});
 
 	f.close()
 	

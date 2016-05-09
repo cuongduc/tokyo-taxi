@@ -79,11 +79,10 @@
 						<div class="form-group">
 							<label for="request">Điểm đến</label>
 							<select name="request" id="request" class="form-control">
-								<option value="3">3</option>	
-								<option value="6">6</option>	
-								<option value="10">10</option>	
-								<option value="17">17</option>	
-								<option value="18">18</option>	
+								<option value="16805">16805 - Parcel</option>
+								<option value="8909">8909 - Passenger</option>
+								<option value="12958">12958 - Parcel</option>
+								<option value="3579">3579 - Passenger</option>	
 							</select>
 						</div>
 						<div class="form-group">
@@ -166,6 +165,8 @@
 
 		var forwardCoor = [];
 		var backwardCoor = [];
+
+		var markerImage;
 
 		var dt = new Date();
 
@@ -308,13 +309,20 @@
 				goButton.show();
 				notification.hide();
 
-				if (forward && backward) {
+				if (forward) {
 					forward.setMap(null);
-					backward.setMap(null);
 					forwardCoor = [];
-					backwardCoor = [];
+				}
 
-					if (routes) {routes.setMap(null); routes = null;}
+				if (backward) {
+					backward.setMap(null);
+					backwardCoor = [];
+				}
+				
+				if (routes) {
+					console.log(routes);
+					routes.setMap(null);
+					routes = null;
 				}
 
 				e.preventDefault();
@@ -331,7 +339,14 @@
 				.success(function(response) {
 
 					if (response) {
+						console.log(response);
 						setParcelText(response.data.id);
+
+						if (response.data.type == 'parcel') {
+							markerImage = 'http://i1156.photobucket.com/albums/p561/davidphamtran/parcel_zpsfcwsbgg5.png';
+						} else {
+							markerImage = 'http://i1156.photobucket.com/albums/p561/davidphamtran/people_zpsyojlduvx.png';
+						}
 
 						for (var i = 0; i < response.data.forward.length; i++) {
 							forwardCoor.push({
@@ -385,23 +400,51 @@
 				goButton.hide();
 				notification.fadeIn(300);
 				if (routes) routes.setMap(null);
+				routes = null;
 
 				var intervalCounter = 0;
-				var mapInterval = setInterval(function(){drawForwardPaths();}, 500);
-								
+				var mapInterval = setInterval(function(){drawForwardPaths(startBackward);}, 500);
+				var backwardInterval;
+				
+				// var markerImage = {
+				// 	url: 'http://www.iconpng.com/png/science-and-technology/sedan1.png',
+				// 	size: new google.maps.Size(32, 32),
+				// 	// The origin for this image is (0, 0).
+				// 	origin: new google.maps.Point(0, 0),
+				// 	// The anchor for this image is the base of the flagpole at (0, 32).
+				// 	anchor: new google.maps.Point(0, 32)
+				// }
+				// var markerImage = 'https://cdn0.iconfinder.com/data/icons/Toolbar_Icon_Set_2_by_shlyapnikova/32/car.png';
+
+				var marker = new google.maps.Marker({
+					position: {},
+				});
+
+				marker.setMap(map);
+
 				var routedPath = new Array();
 
 				// Draw forward paths
-				var drawForwardPaths = function() {
+				var drawForwardPaths = function(callback) {
+					marker.setIcon(markerImage);
+					marker.setMap(map);
 					// If we have gone through all of itmes, stop
 					if (intervalCounter >= forwardCoor.length) {
 						clearInterval(mapInterval);
-						// callback();
+						// clearInterval(backwardInterval);
+						if (typeof callback == 'function') {
+							intervalCounter = 0;
+							callback();
+						};
+
 					} else {
 						var coor = [
 							forwardCoor[intervalCounter],
 							forwardCoor[intervalCounter + 1]
 						];
+						var markerCoor = forwardCoor[intervalCounter+1];
+
+						marker.setPosition(markerCoor);
 
 						routes = new google.maps.Polyline({
 							path: coor,
@@ -412,12 +455,13 @@
 							zIndex: 20
 						});
 						routes.setMap(map);
+						
 						intervalCounter++;
 					}
 				}
 				
 				var startBackward = function() {
-					var backwardInterval = setInterval(function(){drawBackwardPaths();}, 500);
+					backwardInterval = setInterval(function(){drawBackwardPaths();}, 500);
 				}
 
 				// Draw backward paths
@@ -430,6 +474,8 @@
 							backwardCoor[intervalCounter],
 							backwardCoor[intervalCounter + 1]
 						];
+						var backwardMakerCoor = backwardCoor[intervalCounter+1];
+						marker.setPosition(backwardMakerCoor);
 
 						routes = new google.maps.Polyline({
 							path: coor,
