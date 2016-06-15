@@ -1,10 +1,14 @@
-from data_parser import read_data, read_request_data
+from data_parser import read_data, read_request_data, read_taxi_info
 import json
-
+import time
 # points, vertices = read_data()
-
-dump = read_request_data(10)
-print(dump)
+read_data()
+start = time.time()
+common = read_taxi_info()
+done = time.time()
+elapsed = done - start
+print(common)
+print(elapsed)
 
 # synthesized_vertices = []
 

@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify, request
-from data_parser import read_data, read_request_data
+from data_parser import read_data, read_request_data, read_taxi_info
 import copy
 
 app = Flask(__name__)
@@ -11,12 +11,15 @@ END_TAXI_FILE = '-->'
 
 @app.route('/')
 def main():
-	return render_template("index.html")
-
-
-@app.route('/home')
-def home():
 	return render_template("home.html")
+	# return render_template("index.html")
+
+@app.route('/passenger')
+def passenger():
+	return render_template("index.html")
+# @app.route('/home')
+# def home():
+# 	return render_template("home.html")
 
 
 @app.route('/getMapData', methods=['POST'])
@@ -42,6 +45,11 @@ def get_map_data():
 		
 	return jsonify(data=synthesized_vertices)
 
+@app.route('/getTaxisList', methods=['POST'])
+def get_taxi_info():
+	taxis = read_taxi_info()
+
+	return jsonify(data=taxis)
 
 @app.route('/directions', methods=['POST'])
 def get_directions_for_request():
