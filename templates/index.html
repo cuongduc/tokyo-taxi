@@ -6,7 +6,11 @@
 	<title>Shortest path</title>
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+	 
+	<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
 
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
 	<style>
 		#map {
 			display: block;
@@ -60,7 +64,7 @@
 									<span class="icon-bar"></span>
 									<span class="icon-bar"></span>
 								</button>
-								<a href="" class="navbar-brand">
+								<a href="/" class="navbar-brand">
 								<img src="http://makhuyenmaiuber.com/uploads/news/20150930082926.png" alt="" class="img-responsive logo">
 								Tokyo Taxi
 								
@@ -83,6 +87,7 @@
 								<option value="8909">8909 - Passenger</option>
 								<option value="12958">12958 - Parcel</option>
 								<option value="3579">3579 - Passenger</option>	
+								<option value="250">250 - Passenger</option>	
 							</select>
 						</div>
 						<div class="form-group">
@@ -112,9 +117,9 @@
 						</li>
 						<li class="list-group-item" id="taxi-info">
 							<h5><strong>Thông tin xe</strong></h5>
-							<p>Biển số taxi: <strong>29A - 203.68</strong></p>
-							<p>Tên tài xế: <strong>Phạm Duy Hưng</strong></p>
-							<p>Số điện thoại: <strong>098 560 2528</strong></p>
+							<p><span>Biển số taxi: </span><strong id="taxi_no">30A-993.60</strong></p>
+							<p><span>Tài xế: </span><strong id="taxi_driver">Phạm Trường Vinh</strong></p>
+							<p><span>SĐT: </span><strong id="taxi_phone">0989 258 226</strong></p>
 							<p>Rarting: <img src="http://styleangel.ie/wp-content/uploads/2013/04/3060.5star.png-610x0.png" style="height: 25px; width: auto;" alt=""></p>
 							<p class="pull-right">
 
@@ -136,19 +141,30 @@
 							<button type="button" class="btn btn-default" id="back-to-search">Quay lại</button>
 						</li>
 					</ul>
+					<h4>Danh sách Taxi</h4>
+					<ul id="taxis-list" style="max-height: 300px; overflow-y: scroll;"></ul>
 				</div>
+				
 			</div>
 			<div class="col-md-9" id="map-container">
 				<div id="map">
 				</div>
+
 			</div>
 		</div>
 		
 		<!-- Content -->
+		<div id="car-info" title="Thông tin xe" style="display:none;">
+			<p><span>Thời gian đón: </span><strong id="pickup_time"></strong></p>
+			<p><span>Thời gian đến: </span><strong id="arrival_time"></strong></p>
+			<p><span>Biển số taxi: </span><strong id="taxi_no">30A-993.60</strong></p>
+			<p><span>Tài xế: </span><strong id="taxi_driver">Phạm Trường Vinh</strong></p>
+			<p><span>SĐT: </span><strong id="taxi_phone">0989 258 226</strong></p>
+			<p><span>Chở: </span><strong id="taxi_carry"></strong></p>
+		</div>
 	</div>
 
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAZvsz4xVC_W_xSnw9jFuygggEl8DwHrb0&callback=initMap" async defer></script>
@@ -167,6 +183,39 @@
 		var backwardCoor = [];
 
 		var markerImage;
+		var isIntervalPaused = false;
+		var drivers = [
+			{
+				id: 1,
+				taxi_no: '29A - 2367',
+				taxi_driver: 'Nguyễn Mạnh Thắng',
+				taxi_phone: '0968 234 500'
+			},
+			{
+				id: 2,
+				taxi_no: '30A - 238.07',
+				taxi_driver: 'Trần Hùng Cường',
+				taxi_phone: '0907 778 460'
+			},
+			{
+				id: 3,
+				taxi_no: '30A - 400.08',
+				taxi_driver: 'Lưu Sỹ Hùng',
+				taxi_phone: '0912 287 490'
+			},
+			{
+				id: 4,
+				taxi_no: '29A - 3490',
+				taxi_driver: 'Lê Anh Tiến',
+				taxi_phone: '0981 461 993'
+			},
+			{
+				id: 5,
+				taxi_no: '30A - 993.60',
+				taxi_driver: 'Phạm Trường Vinh',
+				taxi_phone: '0989 258 226'
+			},
+		]; 
 
 		var dt = new Date();
 
@@ -175,6 +224,16 @@
 			var val = Math.round(Math.random(25, 60) * 100 * 100) / 100;
 
 			e.text(val + '%');
+		}
+
+		var randomTaxiDriver = function() {
+			var i = Math.floor(Math.random(drivers.length)*5);
+			var driver = drivers[i];
+			console.log(i);
+			$('#taxi-info #taxi_no').text(driver['taxi_no']);
+			$('#taxi-info #taxi_driver').text(driver['taxi_driver']);
+			$('#taxi-info #taxi_phone').text(driver['taxi_phone']);
+
 		}
 
 		function initMap() {
@@ -254,6 +313,47 @@
 				});
 			}
 
+			var getTaxisList = function() {
+				var taxisList = $('#taxis-list');
+				var url = 'getTaxisList';
+				$.ajax({
+					url: url,
+					method: 'POST'
+				})
+				.success(function(response) {
+					var carIcon = 'http://i1156.photobucket.com/albums/p561/davidphamtran/Car_zps7wamqvxw.png';
+					if(response && response.data.length > 0){
+						for(var i = 0; i < response.data.length; i++) {
+							var taxi = response.data[i];
+							taxiMarker = new google.maps.Marker({
+								position: {
+									lat: taxi['lat'],
+									lng: taxi['lng']
+								},
+								map: map,
+								icon: carIcon
+							});
+						}
+					}
+				})
+			}
+
+			$(function() {
+				$('#car-info').dialog({
+					autoOpen: false,
+					buttons: {
+						OK: function() {
+							isIntervalPaused = false;
+							$(this).dialog('close');
+						}
+					},
+					position: {
+						my: 'center center',
+						at: 'center center'
+					}
+				});
+			});
+
 			fitMap();
 			getMapData();
 			$(window).resize(function() {
@@ -306,7 +406,9 @@
 			button.click(function(e){
 				showHidePanel('result');
 				randomSaving();
+				randomTaxiDriver();
 				goButton.show();
+				getTaxisList();
 				notification.hide();
 
 				if (forward) {
@@ -344,8 +446,10 @@
 
 						if (response.data.type == 'parcel') {
 							markerImage = 'http://i1156.photobucket.com/albums/p561/davidphamtran/parcel_zpsfcwsbgg5.png';
+							$('#taxi_carry').text('Hàng hóa');
 						} else {
 							markerImage = 'http://i1156.photobucket.com/albums/p561/davidphamtran/people_zpsyojlduvx.png';
+							$('#taxi_carry').text('Hành khách');
 						}
 
 						for (var i = 0; i < response.data.forward.length; i++) {
@@ -401,23 +505,30 @@
 				notification.fadeIn(300);
 				if (routes) routes.setMap(null);
 				routes = null;
-
-				var intervalCounter = 0;
-				var mapInterval = setInterval(function(){drawForwardPaths(startBackward);}, 500);
-				var backwardInterval;
 				
-				// var markerImage = {
-				// 	url: 'http://www.iconpng.com/png/science-and-technology/sedan1.png',
-				// 	size: new google.maps.Size(32, 32),
-				// 	// The origin for this image is (0, 0).
-				// 	origin: new google.maps.Point(0, 0),
-				// 	// The anchor for this image is the base of the flagpole at (0, 32).
-				// 	anchor: new google.maps.Point(0, 32)
-				// }
-				// var markerImage = 'https://cdn0.iconfinder.com/data/icons/Toolbar_Icon_Set_2_by_shlyapnikova/32/car.png';
+				// Whether the interval is paused
+				var intervalCounter = 0;
+				var mapInterval = setInterval(function(){
+					if (!isIntervalPaused)
+						drawForwardPaths(startBackward);
+				}, 500);
+				var backwardInterval;
+
 
 				var marker = new google.maps.Marker({
 					position: {},
+				});
+
+				// Handle click on marker
+				marker.addListener('click', function() {
+					isIntervalPaused = true;
+					// setup info 
+					$('#car-info #pickup_time').text($('#pick-time').text());
+					$('#car-info #arrival_time').text($('#arrive-time').text());
+					$('#car-info #taxi_no').text($('#taxi-info #taxi_no').text());
+					$('#car-info #taxi_driver').text($('#taxi-info #taxi_driver').text());
+					$('#car-info #taxi_phone').text($('#taxi-info #taxi_phone').text());
+					$('#car-info').dialog('open');
 				});
 
 				marker.setMap(map);

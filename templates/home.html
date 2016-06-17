@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1.0">
+	<title>Tokyo Taxi</title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+	 
+	<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+	<style>
+		#map {
+			display: block;
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			z-index: -5;
+		}
+		.main-element
+		{
+			display: block;
+			z-index: 100;
+			/*margin: auto;*/
+		}
+		.main-element > .row {
+			padding-top: 350px;
+		}
+
+		.full-width{
+			display: block;
+			width: 100%;
+		}
+		.auth {
+			position: fixed;
+			top: 10px;
+			right: 10px;
+		}
+	</style>
+</head>
+<body>
+
+	<div id="map">
+	</div>
+	
+	<div class="auth">
+		<form action="" class="form-inline" role="form">
+			<div class="form-group">
+				<label for="username" class="control-label">Username</label>
+				<input type="text" class="form-control" id="username" placeholder="Username">
+			</div>
+			<div class="form-group">
+				<label for="password" class="control-label">Password</label>
+				<input type="password" class="form-control" id="password" placeholder="Username">
+			</div>
+			<button type="submit" class="btn btn-default">Sign in</button>
+		</form>
+	</div>
+
+	<div class="main-element">
+		
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3">
+				<div action="" class="form">
+					<div class="form-group">
+						<div class="input-group input-group-lg">
+							<input type="text" class="form-control" id="search-query" placeholder="Tìm kiếm địa điểm...">
+							<span class="input-group-btn">
+								<button class="btn btn-default" type="button" id="place-button"><i class="glyphicon glyphicon-search"></i></button>
+							</span>
+						</div><!-- /input-group -->
+					</div>
+					<div class="form-group">
+						<div class="row">
+							<div class="col-md-6 col-xs-6">
+								<button type="button" class="btn btn-danger btn-lg full-width" data-toggle="modal" data-target="#parcelModal"><i class="glyphicon glyphicon-envelope"></i> Parcel Request</button>
+							</div>
+							<div class="col-md-6 col-xs-6">
+								<a href="passenger" type="button" class="btn btn-success btn-lg full-width"><i class="glyphicon glyphicon-user"></i> Passenger Request</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="parcelModal" tabindex="-1" role="dialog" aria-labelledby="parcelModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="parcelModalLabel">Thông tin hàng hóa</h4>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="form-group">
+							<label for="parcel-type" class="control-label">Loại hàng hóa:</label>
+							<select name="parcel-type" id="parcel-type" class="form-control">
+								<option value="">Đồ điện tử</option>
+								<option value="">Đồ gia dụng</option>
+								<option value="">Hải sản</option>
+								<option value="">Rau củ quả</option>
+								<option value="">Bưu kiện</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="parcel-weight" class="control-label">Khối lượng:</label>
+							<input class="form-control" id="parcel-weight" placeholder="Khối lượng hàng hóa (VD: 8kg)"></input>
+						</div>
+						<div class="form-group">
+							<label for="parcel-size" class="control-label">Kích thước:</label>
+							<input class="form-control" id="parcel-size" placeholder="Kích thước hàng hóa tính bằng cm (VD: 11x12x4cm)"></input>
+						</div>
+						<div class="form-group">
+							<label for="parcel-time" class="control-label">Thời gian nhận:</label>
+							<select name="parcel-time" id="parcel-time" class="form-control">
+								<option value="">12h đến 2h</option>
+								<option value="">2h đến 4h</option>
+								<option value="">4h đến 6h</option>
+								<option value="">6h đến 8h</option>
+								<option value="">8h đến 12h</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="parcel-money" class="control-label">Tiền thu hộ:</label>
+							<input class="form-control" id="parcel-money"></input>
+						</div>
+						<div class="form-group">
+							<label for="parcel-note" class="control-label">Ghi chú:</label>
+							<textarea class="form-control" id="parcel-note"></textarea>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Hủy</button>
+					<button type="button" class="btn btn-primary">Gửi yêu cầu</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAZvsz4xVC_W_xSnw9jFuygggEl8DwHrb0&callback=initMap&libraries=places" async defer></script>
+	<script>
+		var container = document.getElementById('map');
+		var map;
+
+		function initMap() {
+			map = new google.maps.Map(container, {
+				center: {lat: 20.6035975, lng: 106.699823},
+				zoom: 8,
+				mapTypeId: google.maps.MapTypeId.ROADMAP,
+				mapTypeControl:false,
+				zoomControl:true,
+				scaleControl:true,
+			    fullscreenControl: false
+			});
+
+			addSearchControl(map);
+
+		}
+		
+		function fitMap() {
+			var w = window.innerWidth;
+			var h = window.innerHeight;
+
+			container.style.width = (w - 1) + 'px';
+			container.style.height = (h - 1) + 'px';
+		}
+
+		function addSearchControl(map) {
+			console.log(map);
+			// Create the search box and link it to the UI element
+			var input = document.getElementById('search-query');
+			var searchBox = new google.maps.places.SearchBox(input);
+			map.controls[google.maps.ControlPosition.TOP_CENTER].push(searchBox[0]);
+
+			// Bias the SearchBox results towards current map's viewport.
+			map.addListener('bounds_changed', function() {
+				searchBox.setBounds(map.getBounds());
+			});
+
+			var markers = [];
+			// Listen for the event fired when the user selects a prediction and retrieve
+			// more details for that place.
+			searchBox.addListener('places_changed', function() {
+				var places = searchBox.getPlaces();
+
+				if (places.length == 0) {
+				  return;
+				}
+
+				// Clear out the old markers.
+				markers.forEach(function(marker) {
+				  marker.setMap(null);
+				});
+				markers = [];
+
+				// For each place, get the icon, name and location.
+				var bounds = new google.maps.LatLngBounds();
+				places.forEach(function(place) {
+				  var icon = {
+				    url: place.icon,
+				    size: new google.maps.Size(71, 71),
+				    origin: new google.maps.Point(0, 0),
+				    anchor: new google.maps.Point(17, 34),
+				    scaledSize: new google.maps.Size(10, 10)
+				  };
+
+				  // Create a marker for each place.
+				  markers.push(new google.maps.Marker({
+				    map: map,
+				    icon: icon,
+				    title: place.name,
+				    position: place.geometry.location
+				  }));
+
+				  if (place.geometry.viewport) {
+				    // Only geocodes have viewport.
+				    bounds.union(place.geometry.viewport);
+				  } else {
+				    bounds.extend(place.geometry.location);
+				  }
+				});
+				map.fitBounds(bounds);
+			});
+		}
+
+		$(document).ready(function() {
+			fitMap();
+		});
+	</script>
+</body>
+</html>
