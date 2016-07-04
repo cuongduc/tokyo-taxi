@@ -130,8 +130,10 @@
 						<li class="list-group-item" id="parcel-info">
 							<h5><strong>Hàng hóa : <span class="parcel-id">3</span></strong></h5>
 							<ul>
-								<li>Thực phẩm</li>
-								<li>Đồ điện tử</li>
+								<li>Loại hàng hóa: <strong>{{ parcel.parcel_type }}</strong></li>
+								<li>Khối lượng: <strong>{{ parcel.parcel_weight }}</strong></li>
+								<li>Kích thước: <strong>{{ parcel.parcel_dimension }}</strong></li>
+								<li>Thời gian nhận hàng: <strong>{{ parcel.parcel_arrive_time }}</strong></li>
 							</ul>
 
 						</li>

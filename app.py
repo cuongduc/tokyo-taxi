@@ -1,7 +1,9 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, redirect
 from data_parser import read_data, read_request_data, read_taxi_info
 from forms import ParcelRequestForm
+from data.parcel_request import *
 import sys
+
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
@@ -26,12 +28,21 @@ def main():
             'parcel_note': form.parcel_note.data
         }
         persist_parcel_request_data(parcel_request)
+        return redirect('/passenger')
     return render_template("home.html", form=form)
 
 
 @app.route('/passenger')
 def passenger():
-    return render_template("index.html")
+    parcel = {
+        'parcel_type': PARCEL_TYPE,
+        'parcel_weight': PARCEL_WEIGHT,
+        'parcel_dimension': PARCEL_DIMENSION,
+        'parcel_arrive_time': PARCEL_ARRIVE_TIME,
+        'parcel_fee': PARCEL_FEE,
+        'parcel_note': PARCEL_NOTE
+    }
+    return render_template("index.html", parcel=parcel)
 
 
 @app.route('/getMapData', methods=['POST'])
