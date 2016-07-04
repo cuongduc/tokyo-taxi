@@ -1,0 +1,7 @@
+# -*- encoding: utf-8 -*-
+PARCEL_TYPE='Đồ điện tử'
+PARCEL_WEIGHT='12'
+PARCEL_DIMENSION='12x12x12'
+PARCEL_ARRIVE_TIME='12h đến 2h'
+PARCEL_FEE='1250000'
+PARCEL_NOTE='Blah Blah'

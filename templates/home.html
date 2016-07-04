@@ -89,56 +89,53 @@
 
 	<div class="modal fade" id="parcelModal" tabindex="-1" role="dialog" aria-labelledby="parcelModalLabel">
 		<div class="modal-dialog" role="document">
+			<form action="#" method="post" name="form">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 					<h4 class="modal-title" id="parcelModalLabel">Thông tin hàng hóa</h4>
 				</div>
 				<div class="modal-body">
-					<form>
 						<div class="form-group">
-							<label for="parcel-type" class="control-label">Loại hàng hóa:</label>
-							<select name="parcel-type" id="parcel-type" class="form-control">
-								<option value="">Đồ điện tử</option>
-								<option value="">Đồ gia dụng</option>
-								<option value="">Hải sản</option>
-								<option value="">Rau củ quả</option>
-								<option value="">Bưu kiện</option>
+							<label for="parcel_type" class="control-label">{{ form.parcel_type.label }}:</label>
+							<select name="parcel_type" id="parcel_type" class="form-control">
+								{% for choice in form.parcel_type.choices %}
+									<option value="{{ choice[0] }}">{{ choice[1] }}</option>
+								{% endfor %}
 							</select>
 						</div>
 						<div class="form-group">
-							<label for="parcel-weight" class="control-label">Khối lượng:</label>
-							<input class="form-control" id="parcel-weight" placeholder="Khối lượng hàng hóa (VD: 8kg)"></input>
+							<label for="parcel_weight" class="control-label">{{ form.parcel_weight.label }}:</label>
+							{{ form.parcel_weight(class="form-control")}}
+							
 						</div>
 						<div class="form-group">
-							<label for="parcel-size" class="control-label">Kích thước:</label>
-							<input class="form-control" id="parcel-size" placeholder="Kích thước hàng hóa tính bằng cm (VD: 11x12x4cm)"></input>
+							<label for="parcel_dimension" class="control-label">{{ form.parcel_dimension.label }}:</label>
+							{{ form.parcel_dimension(class="form-control")}}
 						</div>
 						<div class="form-group">
-							<label for="parcel-time" class="control-label">Thời gian nhận:</label>
-							<select name="parcel-time" id="parcel-time" class="form-control">
-								<option value="">12h đến 2h</option>
-								<option value="">2h đến 4h</option>
-								<option value="">4h đến 6h</option>
-								<option value="">6h đến 8h</option>
-								<option value="">8h đến 12h</option>
+							<label for="parcel_arrive_time" class="control-label">{{ form.parcel_arrive_time.label }}:</label>
+							<select name="parcel_arrive_time" id="parcel_arrive_time" class="form-control">
+								{% for choice in form.parcel_arrive_time.choices %}
+									<option value="{{ choice[0] }}">{{ choice[1] }}</option>
+								{% endfor %}
 							</select>
 						</div>
 						<div class="form-group">
-							<label for="parcel-money" class="control-label">Tiền thu hộ:</label>
-							<input class="form-control" id="parcel-money"></input>
+							<label for="parcel_fee" class="control-label">{{ form.parcel_fee.label }}:</label>
+							{{ form.parcel_fee(class="form-control")}}
 						</div>
 						<div class="form-group">
-							<label for="parcel-note" class="control-label">Ghi chú:</label>
-							<textarea class="form-control" id="parcel-note"></textarea>
+							<label for="parcel_note" class="control-label">{{ form.parcel_note.label }}:</label>
+							{{ form.parcel_note(class="form-control")}}
 						</div>
-					</form>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Hủy</button>
-					<button type="button" class="btn btn-primary">Gửi yêu cầu</button>
+					<button type="submit" class="btn btn-primary">Gửi yêu cầu</button>
 				</div>
 			</div>
+			</form>
 		</div>
 	</div>
 
