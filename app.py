@@ -25,7 +25,8 @@ def main():
             'parcel_dimension': form.parcel_dimension.data,
             'parcel_arrive_time': form.parcel_arrive_time.data,
             'parcel_fee': form.parcel_fee.data,
-            'parcel_note': form.parcel_note.data
+            'parcel_note': form.parcel_note.data,
+            'parcel_place': form.parcel_place.data
         }
         persist_parcel_request_data(parcel_request)
         return redirect('/passenger')
@@ -40,7 +41,8 @@ def passenger():
         'parcel_dimension': PARCEL_DIMENSION,
         'parcel_arrive_time': PARCEL_ARRIVE_TIME,
         'parcel_fee': PARCEL_FEE,
-        'parcel_note': PARCEL_NOTE
+        'parcel_note': PARCEL_NOTE,
+        'parcel_place': PARCEL_PLACE
     }
     return render_template("index.html", parcel=parcel)
 
@@ -93,6 +95,7 @@ def persist_parcel_request_data(parcel):
     f.writelines("PARCEL_ARRIVE_TIME='" + str(parcel['parcel_arrive_time']) + "'\n")
     f.writelines("PARCEL_FEE='" + str(parcel['parcel_fee']) + "'\n")
     f.writelines("PARCEL_NOTE='" + str(parcel['parcel_note']) + "'\n")
+    f.writelines("PARCEL_PLACE='" + str(parcel['parcel_place']) + "'\n")
 
     f.close()
 

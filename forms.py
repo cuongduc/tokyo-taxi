@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 import sys
-from wtforms import Form, StringField, DecimalField, SelectField
+from wtforms import Form, StringField, DecimalField, SelectField, HiddenField
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -19,3 +19,4 @@ class ParcelRequestForm(Form):
         ('8h đến 12h', '8h đến 12h')])
     parcel_fee = DecimalField('Tiền thu hộ')
     parcel_note = StringField('Ghi chú')
+    parcel_place = StringField('parcel_place')
