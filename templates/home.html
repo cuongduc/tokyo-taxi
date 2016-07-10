@@ -174,7 +174,6 @@
 		}
 
 		function addSearchControl(map) {
-			console.log(map);
 			// Create the search box and link it to the UI element
 			var input = document.getElementById('search-query');
 			var searchBox = new google.maps.places.SearchBox(input);
@@ -235,10 +234,13 @@
 
 
 		function recordThePlace() {
-			var el = $('#place_place');
+			var el = $('#parcel_place');
 			var search_input = $('#search-query');
 
 			el.val(search_input.val());
+
+			console.log(el);
+			console.log(search_input);
 		}
 
 		$(document).ready(function() {

@@ -93,7 +93,7 @@
 						</div>
 						<div class="form-group">
 							<label for="time">Thời gian</label>
-							<input type="date" name="time" class="form-control">
+							<input type="date" name="time" class="form-control" id="request_time">
 						</div>
 						<div class="form-group">
 							<label for="note">Ghi chú</label>
@@ -280,6 +280,14 @@
 			var notification = $('#notification');
 			notification.hide();
 
+			var setFakeRequestTime = function() 
+			{
+				var time = new Date(new Date().getTime()).toISOString().slice(0,10);
+				var el = $('#request_time');
+
+				el.val(time);
+			}
+
 			var getMapData = function() {
 				var url = 'getMapData';
 				$.ajax({
@@ -314,7 +322,9 @@
 				.error(function(response) {
 					console.log('error', response);
 				});
+
 			}
+			setFakeRequestTime();
 
 			var getTaxisList = function() {
 				var taxisList = $('#taxis-list');
@@ -401,10 +411,13 @@
 				arriveTime.text(dt.getHours() + ':' + dt.getMinutes() + ':' + dt.getSeconds());
 			}
 
+
 			backToSearch.click(function(e) {
 				e.preventDefault();
 				showHidePanel('search');
 			});
+
+
 
 			button.click(function(e){
 				showHidePanel('result');

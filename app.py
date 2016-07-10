@@ -3,6 +3,7 @@ from data_parser import read_data, read_request_data, read_taxi_info
 from forms import ParcelRequestForm
 from data.parcel_request import *
 import sys
+import random
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -44,6 +45,8 @@ def passenger():
         'parcel_note': PARCEL_NOTE,
         'parcel_place': PARCEL_PLACE
     }
+
+    print(parcel)
     return render_template("index.html", parcel=parcel)
 
 
@@ -80,8 +83,10 @@ def get_taxi_info():
 
 @app.route('/directions', methods=['POST'])
 def get_directions_for_request():
-    rid = request.form['request']
-    rid = int(rid)
+    request_list = [16805, 8909, 12958, 3579, 250]
+    rid = random.choice(request_list)
+    # rid = request.form['request']
+    # rid = int(rid)
     r = read_request_data(rid)
     return jsonify(data=r)
 

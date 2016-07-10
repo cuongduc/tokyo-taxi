@@ -19,4 +19,4 @@ class ParcelRequestForm(Form):
         ('8h đến 12h', '8h đến 12h')])
     parcel_fee = DecimalField('Tiền thu hộ')
     parcel_note = StringField('Ghi chú')
-    parcel_place = StringField('parcel_place')
+    parcel_place = HiddenField('parcel_place')
