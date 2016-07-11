@@ -45,8 +45,7 @@ def passenger():
         'parcel_note': PARCEL_NOTE,
         'parcel_place': PARCEL_PLACE
     }
-
-    print(parcel)
+    
     return render_template("index.html", parcel=parcel)
 
 
