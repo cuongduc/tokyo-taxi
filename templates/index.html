@@ -691,6 +691,13 @@
 						});
 						routes.setMap(map);
 						
+						var centerLatLng = new google.maps.LatLng(
+							forwardCoor[intervalCounter].lat,
+							forwardCoor[intervalCounter].lng);
+
+						console.log(centerLatLng);
+						map.setCenter(centerLatLng);
+
 						intervalCounter++;
 					}
 				}
