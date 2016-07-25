@@ -34,6 +34,11 @@ def main():
     return render_template("home.html", form=form)
 
 
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+    return render_template('admin.html')
+
+
 @app.route('/passenger')
 def passenger():
     parcel = {
@@ -45,7 +50,7 @@ def passenger():
         'parcel_note': PARCEL_NOTE,
         'parcel_place': PARCEL_PLACE
     }
-    
+
     return render_template("index.html", parcel=parcel)
 
 
@@ -90,13 +95,22 @@ def get_directions_for_request():
     return jsonify(data=r)
 
 
+@app.route('/all_directions', methods=['POST'])
+def get_all_directions_for_requests():
+    request_list = [16805, 8909, 12958, 3579, 250]
+    r = read_request_data(request_list, all=True)
+    return jsonify(data=r)
+
+
 def persist_parcel_request_data(parcel):
     f = open('data/parcel_request.py', 'w')
     f.writelines('# -*- encoding: utf-8 -*-\n')
     f.writelines("PARCEL_TYPE='" + str(parcel['parcel_type']) + "'\n")
     f.writelines("PARCEL_WEIGHT='" + str(parcel['parcel_weight']) + "'\n")
-    f.writelines("PARCEL_DIMENSION='" + str(parcel['parcel_dimension']) + "'\n")
-    f.writelines("PARCEL_ARRIVE_TIME='" + str(parcel['parcel_arrive_time']) + "'\n")
+    f.writelines("PARCEL_DIMENSION='" +
+                 str(parcel['parcel_dimension']) + "'\n")
+    f.writelines("PARCEL_ARRIVE_TIME='" +
+                 str(parcel['parcel_arrive_time']) + "'\n")
     f.writelines("PARCEL_FEE='" + str(parcel['parcel_fee']) + "'\n")
     f.writelines("PARCEL_NOTE='" + str(parcel['parcel_note']) + "'\n")
     f.writelines("PARCEL_PLACE='" + str(parcel['parcel_place']) + "'\n")

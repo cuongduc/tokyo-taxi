@@ -80,10 +80,10 @@ def read_data():
 
         if switch:
             item = {
-                'start' 	: int(tokens[0]),
-                'end'		: int(tokens[1]),
-                'distance'	: float(tokens[2]),
-                'type'		: int(tokens[3])
+                'start'     : int(tokens[0]),
+                'end'       : int(tokens[1]),
+                'distance'  : float(tokens[2]),
+                'type'      : int(tokens[3])
             }
             vertices.append(item)
         else:
@@ -98,7 +98,7 @@ def read_data():
 # Xu ky request
 
 
-def read_request_data(sid):
+def read_request_data(sid, all=None):
     input_file = 'data/outputByTime_05_09_08_43_58.txt'
 
     if not os.path.isfile(input_file):
@@ -161,6 +161,23 @@ def read_request_data(sid):
 
     f.close()
 
-    for re in requests:
-        if re['id'] == sid:
-            return re
+    if all is False:
+        for re in requests:
+            if re['id'] == sid:
+                return re
+    return request
+
+def read_all_request_data():
+    input_file = 'data/outputByTime_05_09_08_43_58.txt'
+
+    if not os.path.isfile(input_file):
+        return False
+
+    f = open(input_file, 'r')
+
+    requests = []
+    request = {}
+    flow = 'forward'
+    new_request = False
+
+    points, _ = read_data()

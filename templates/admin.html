@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1.0">
+	<title>Shortest path</title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+	 
+	<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+	<style>
+		#map {
+			display: block;
+			position: absolute;
+			width: 100%;
+			height: 100%;
+		}
+
+		.navbar {
+			margin-bottom: 0 !important;
+		}
+
+		.clearfix {
+			clear: both;
+		}
+		
+		.navbar {
+			border: none;
+			border-radius: none;
+			background-color: #FF9800;
+		}
+
+		a.navbar-brand {
+			text-transform: uppercase;
+			font-weight: bold;
+			text-shadow: 0px 2px 2px rgba(0,0,0,0.13);
+			font-size: 20px;
+			color: #fff !important;
+			padding-top: 5px !important;
+		}
+
+		.logo {
+			display: inline-block !important;
+			max-height: 50px;
+			width: auto;
+		}
+
+		.logs {
+			padding-left: 5px;
+		}
+	</style>
+</head>
+<body>
+	<div class="container-fluid" id="bar">
+		<div class="row">
+			<div class="col-md-3" style="background-color: #B2DFDB;">
+				<div class="row">
+					<!-- Navbar -->
+					<nav class="navbar navbar-default">
+						<div class="container">
+							<div class="navbar-header">
+								<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-navbar" aria-expanded="false">
+									<span class="sr-only">Toggle navigation</span>
+									<span class="icon-bar"></span>
+									<span class="icon-bar"></span>
+									<span class="icon-bar"></span>
+								</button>
+								<a href="/" class="navbar-brand">
+								<img src="http://makhuyenmaiuber.com/uploads/news/20150930082926.png" alt="" class="img-responsive logo">
+								Tokyo Taxi
+								
+								</a>
+							</div>
+						</div>
+					</nav>
+				</div>
+
+				<div class="row" id="search" style="display:block;">
+					<form action="/directions" class="form">
+						<div class="form-group">
+							<label for="">Điểm đầu</label>
+							<input type="text" class="form-control" value="Vị trí của bạn">
+						</div>
+						<div class="form-group">
+							<label for="request">Điểm đến</label>
+							<input type="text" value="" class="form-control" name="parcel_place" id="parcel_place">
+						</div>
+						<div class="form-group">
+							<label for="time">Thời gian</label>
+							<input type="date" name="time" class="form-control" id="request_time">
+						</div>
+						<div class="form-group">
+							<label for="note">Ghi chú</label>
+							<textarea name="note" id="note" cols="30" rows="5" class="form-control" placeholder="Nếu bạn có yêu cầu đặc biệt gì, vui lòng viết tại đây!"></textarea>
+						</div>
+						<button type="button" id="getDirectionButton" class="btn btn-success">Tìm đường</button>
+						<a href="/" class="btn btn-default">Quay lại trang chủ</a>
+					</form>
+
+					<div class="panel">
+						<div class="panel-body">
+							<ul class="logs">
+								<li>
+									<strong>REQUEST</strong>: /getDirection, params <code>{start: 139.0161875, end: <span class="end_coor">139.0161875</span>}</code>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+				<div class="row" id="result" style="display: none;">
+					<ul class="list-group">
+						<li>
+							<h3><span class="label label-success" id="notification">Chúc mừng bạn đã lên đường</span></h3>
+						</li>
+						<li class="list-group-item" id="route-cost">
+							<h3>Giá: <strong style="color:#e5002b;">45.000 VNĐ</strong></h3>
+							<h3 style="text-align:center; color:orange;">Tiết kiệm <strong id="saving"></strong></h3>
+							<p>Thời gian đón: <strong id="pick-time"></strong></p>
+							<p>Thời gian đến: <strong id="arrive-time"></strong></p>
+							<p>Quãng đường: <strong id="route-distance"></strong></p>
+
+						</li>
+						<li class="list-group-item" id="taxi-info">
+							<h5><strong>Thông tin xe</strong></h5>
+							<p><span>Biển số taxi: </span><strong id="taxi_no">30A-993.60</strong></p>
+							<p><span>Tài xế: </span><strong id="taxi_driver">Phạm Trường Vinh</strong></p>
+							<p><span>SĐT: </span><strong id="taxi_phone">0989 258 226</strong></p>
+							<p>Rarting: <img src="http://styleangel.ie/wp-content/uploads/2013/04/3060.5star.png-610x0.png" style="height: 25px; width: auto;" alt=""></p>
+							<p class="pull-right">
+
+								<a href=""><small>Xem đánh giá</small></a>
+							</p>
+							<div class="clearfix"></div>
+						</li>
+						<li class="list-group-item">
+							<button type="button" class="btn btn-success" id="go">Lên xe</button>
+
+							<button type="button" class="btn btn-default" id="back-to-search">Quay lại</button>
+						</li>
+					</ul>
+					<h4>Danh sách Taxi</h4>
+					<ul id="taxis-list" style="max-height: 300px; overflow-y: scroll;"></ul>
+
+					<div class="panel">
+						<div class="panel-body">
+							<ul class="logs">
+								<li>
+									<strong>REQUEST</strong>: /getDirection, params <code>{start: 139.0161875, end: <span class="end_coor">139.0161875</span>}</code>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+			<div class="col-md-9" id="map-container">
+				<div id="map">
+				</div>
+
+			</div>
+		</div>
+		
+		<!-- Content -->
+		<div id="car-info" title="Thông tin xe" style="display:none;">
+			<p><span>Thời gian đón: </span><strong id="pickup_time"></strong></p>
+			<p><span>Thời gian đến: </span><strong id="arrival_time"></strong></p>
+			<p><span>Biển số taxi: </span><strong id="taxi_no">30A-993.60</strong></p>
+			<p><span>Tài xế: </span><strong id="taxi_driver">Phạm Trường Vinh</strong></p>
+			<p><span>SĐT: </span><strong id="taxi_phone">0989 258 226</strong></p>
+			<p><span>Chở: </span><strong id="taxi_carry"></strong></p>
+		</div>
+	</div>
+
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAZvsz4xVC_W_xSnw9jFuygggEl8DwHrb0&callback=initMap" async defer></script>
+	<script>
+		var container = document.getElementById('map')
+		var map, forward, backward;
+		var routes;
+		var initialRoutesCoordinates = [];
+		var initPath = null;
+
+		var button = $('#getDirectionButton');
+		var backToSearch = $('#back-to-search');
+		var goButton  = $('#go');
+
+		var forwardCoor = [];
+		var backwardCoor = [];
+
+		var markerImage;
+		var isIntervalPaused = false;
+		var drivers = [
+			{
+				id: 1,
+				taxi_no: '29A - 2367',
+				taxi_driver: 'Nguyễn Mạnh Thắng',
+				taxi_phone: '0968 234 500'
+			},
+			{
+				id: 2,
+				taxi_no: '30A - 238.07',
+				taxi_driver: 'Trần Hùng Cường',
+				taxi_phone: '0907 778 460'
+			},
+			{
+				id: 3,
+				taxi_no: '30A - 400.08',
+				taxi_driver: 'Lưu Sỹ Hùng',
+				taxi_phone: '0912 287 490'
+			},
+			{
+				id: 4,
+				taxi_no: '29A - 3490',
+				taxi_driver: 'Lê Anh Tiến',
+				taxi_phone: '0981 461 993'
+			},
+			{
+				id: 5,
+				taxi_no: '30A - 993.60',
+				taxi_driver: 'Phạm Trường Vinh',
+				taxi_phone: '0989 258 226'
+			},
+		]; 
+
+		var dt = new Date();
+
+		var randomSaving = function() {
+			var e = $('#saving');
+			var val = Math.round(Math.random(25, 60) * 100 * 100) / 100;
+
+			e.text(val + '%');
+		}
+
+		var randomTaxiDriver = function() {
+			var i = Math.floor(Math.random(drivers.length)*5);
+			var driver = drivers[i];
+			console.log(i);
+			$('#taxi-info #taxi_no').text(driver['taxi_no']);
+			$('#taxi-info #taxi_driver').text(driver['taxi_driver']);
+			$('#taxi-info #taxi_phone').text(driver['taxi_phone']);
+
+		}
+
+		function initMap() {
+			map = new google.maps.Map(container, {
+				center: {lat: 35.6688687, lng: 139.7524835},
+				zoom: 11,
+				mapTypeId: google.maps.MapTypeId.ROADMAP,
+				mapTypeControl: true,
+			    mapTypeControlOptions: {
+			        style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+			        position: google.maps.ControlPosition.TOP_CENTER
+			    },
+			    zoomControl: true,
+			    zoomControlOptions: {
+			        position: google.maps.ControlPosition.LEFT_CENTER
+			    },
+			    scaleControl: true,
+			    streetViewControl: true,
+			    streetViewControlOptions: {
+			        position: google.maps.ControlPosition.LEFT_TOP
+			    },
+			    fullscreenControl: true
+			});
+
+			// addSearchControl(map);
+		}
+
+		// Function lấy vị trí google map 
+		/**
+		 * Fit the map to full width and height of the
+		 * browser's content window
+		 */
+		function fitMap() {
+			var w = window.innerWidth;
+			var h = window.innerHeight;
+
+			var barW = $('#bar').width();
+
+			container.style.width = (w - 1) + 'px';
+			container.style.height = (h - 1) + 'px';
+		}
+
+		$(document).ready(function() {
+			var notification = $('#notification');
+			notification.hide();
+
+			var setFakeRequestTime = function() 
+			{
+				var time = new Date(new Date().getTime()).toISOString().slice(0,10);
+				var el = $('#request_time');
+
+				el.val(time);
+			}
+
+			var getMapData = function() {
+				var url = 'getMapData';
+				$.ajax({
+					url: url,
+					type: 'POST'
+				})
+				.success(function(response) {
+					for (var i = 0; i < response.data.length; i++) {
+						var segmentCoor = [];
+						var start = {
+							lat: response.data[i].start.lat,
+							lng: response.data[i].start.lng,
+						}
+						segmentCoor.push(start);
+						var end = {
+							lat: response.data[i].end.lat,
+							lng: response.data[i].end.lng,
+						}
+						segmentCoor.push(end);
+
+						var segment = new google.maps.Polyline({
+							path: segmentCoor,
+							geodesic: true,
+							strokeColor: '#ff8f00',
+							strokeOpacity: 1.0,
+							strokeWeight: 1
+						});
+
+						segment.setMap(map);
+
+					}
+				})
+				.error(function(response) {
+					console.log('error', response);
+				});
+
+			}
+			setFakeRequestTime();
+
+			var getTaxisList = function() {
+				var taxisList = $('#taxis-list');
+				var url = 'getTaxisList';
+				$.ajax({
+					url: url,
+					method: 'POST'
+				})
+				.success(function(response) {
+					var carIcon = 'http://i1156.photobucket.com/albums/p561/davidphamtran/Car_zps7wamqvxw.png';
+					if(response && response.data.length > 0){
+						for(var i = 0; i < response.data.length; i++) {
+							var taxi = response.data[i];
+							taxiMarker = new google.maps.Marker({
+								position: {
+									lat: taxi['lat'],
+									lng: taxi['lng']
+								},
+								map: map,
+								icon: carIcon
+							});
+						}
+					}
+				})
+			}
+
+			$(function() {
+				$('#car-info').dialog({
+					autoOpen: false,
+					buttons: {
+						OK: function() {
+							isIntervalPaused = false;
+							$(this).dialog('close');
+						}
+					},
+					position: {
+						my: 'center center',
+						at: 'center center'
+					}
+				});
+			});
+
+			fitMap();
+			getMapData();
+			$(window).resize(function() {
+				fitMap();
+			});
+
+			var setParcelText = function(id) {
+				var ele = $('.parcel-id');
+				ele.text(id);
+			}
+
+			// Show result panel
+			var showHidePanel = function(panel) {
+				var search = $('#search');
+				var result = $('#result');
+
+				if (panel == 'result') {
+					search.css('display', 'none');
+					result.css('display', 'block');
+				} else {
+					search.css('display', 'block');
+					result.css('display', 'none');
+				}
+			}
+
+			// Calculate time
+			var getTime = function() {
+				var dt = new Date();
+				dt.setMinutes(dt.getMinutes() + 10);
+
+				var pickUp = $('#pick-time');
+				pickUp.text(dt.getHours() + ':' + dt.getMinutes() + ':' + dt.getSeconds());
+				
+				// Get time differences of the forward route
+				var len = backwardCoor.length;
+				var start = forwardCoor[0].time;
+				var end = backwardCoor[len-1].time;
+				var diff = end - start;
+				
+				var arriveTime = $('#arrive-time');
+				dt.setSeconds(dt.getSeconds() + diff);
+				arriveTime.text(dt.getHours() + ':' + dt.getMinutes() + ':' + dt.getSeconds());
+			}
+
+
+			backToSearch.click(function(e) {
+				e.preventDefault();
+				showHidePanel('search');
+			});
+
+
+
+			button.click(function(e){
+				showHidePanel('result');
+				randomSaving();
+				randomTaxiDriver();
+				goButton.show();
+				getTaxisList();
+				notification.hide();
+
+				if (forward) {
+					forward.setMap(null);
+					forwardCoor = [];
+				}
+
+				if (backward) {
+					backward.setMap(null);
+					backwardCoor = [];
+				}
+				
+				if (routes) {
+					console.log(routes);
+					routes.setMap(null);
+					routes = null;
+				}
+
+				e.preventDefault();
+				var id = $('#request').val();
+				var url = '/all_directions';
+
+				$.ajax({
+					url: url,
+					type: 'POST',
+					data: {
+						request: id
+					}
+				})
+				.success(function(response) {
+					console.log(response);
+
+					// Write log
+					var el = $('.logs');
+						
+					if (response) {
+						console.log(response);
+						setParcelText(response.data.id);
+
+						if (response.data.type == 'parcel') {
+							markerImage = 'http://i1156.photobucket.com/albums/p561/davidphamtran/parcel_zpsfcwsbgg5.png';
+							$('#taxi_carry').text('Hàng hóa');
+						} else {
+							markerImage = 'http://i1156.photobucket.com/albums/p561/davidphamtran/people_zpsyojlduvx.png';
+							$('#taxi_carry').text('Hành khách');
+						}
+
+						for (var i = 0; i < response.data.forward.length; i++) {
+							forwardCoor.push({
+								lat: response.data.forward[i].lat,
+								lng: response.data.forward[i].lng,
+								time: response.data.forward[i].time
+							});
+							var line = '<li><strong>RESPONSE</strong> Segment: <code>{start: (' + response.data.forward[i].lat + ',' + response.data.forward[i].lng + ')</code></li>';
+
+							el.append(line);
+						}
+
+						forward = new google.maps.Polyline({
+							path: forwardCoor,
+							geodesic: true,
+							strokeColor: '#000000',
+							strokeOpacity: 1.0,
+							strokeWeight: 10
+						});
+
+						map.setCenter(forwardCoor[0]);
+						forward.setMap(map);
+
+						for (var j = 0; j < response.data.backward.length; j++) {
+							backwardCoor.push({
+								lat: response.data.backward[j].lat,
+								lng: response.data.backward[j].lng,
+								time: response.data.backward[j].time
+							});
+
+							var line = '<li><strong>RESPONSE</strong> Segment: <code>{end: (' + response.data.backward[j].lat + ',' + response.data.backward[j].lng + ')}</code></li>';
+
+							el.append(line);
+						}
+
+						backward = new google.maps.Polyline({
+							path: backwardCoor,
+							geodesic: true,
+							strokeColor: '#1565C0',
+							strokeOpacity: 1.0,
+							strokeWeight: 6
+						});
+
+						backward.setMap(map);
+						map.setZoom(15);
+						getTime();
+						
+						var line = '<li><strong>RESPONSE</strong> Segment: <code>{start: (' + start.lat + ',' + start.lng + ') end: (' + end.lat + ',' + end.lng + ')}</code></li>';
+
+						el.append(line);
+
+					}
+				})
+				.error(function() {
+					console.log('error');
+				})
+
+			});
+
+			// Len xe
+			goButton.click(function(e) {
+				goButton.hide();
+				notification.fadeIn(300);
+				if (routes) routes.setMap(null);
+				routes = null;
+				
+				// Whether the interval is paused
+				var intervalCounter = 0;
+				var mapInterval = setInterval(function(){
+					if (!isIntervalPaused)
+						drawForwardPaths(startBackward);
+				}, 500);
+				var backwardInterval;
+
+
+				var marker = new google.maps.Marker({
+					position: {},
+				});
+
+				// Handle click on marker
+				marker.addListener('click', function() {
+					isIntervalPaused = true;
+					// setup info 
+					$('#car-info #pickup_time').text($('#pick-time').text());
+					$('#car-info #arrival_time').text($('#arrive-time').text());
+					$('#car-info #taxi_no').text($('#taxi-info #taxi_no').text());
+					$('#car-info #taxi_driver').text($('#taxi-info #taxi_driver').text());
+					$('#car-info #taxi_phone').text($('#taxi-info #taxi_phone').text());
+					$('#car-info').dialog('open');
+				});
+
+				marker.setMap(map);
+
+				var routedPath = new Array();
+
+				// Draw forward paths
+				var drawForwardPaths = function(callback) {
+					marker.setIcon(markerImage);
+					marker.setMap(map);
+					// If we have gone through all of itmes, stop
+					if (intervalCounter >= forwardCoor.length) {
+						clearInterval(mapInterval);
+						// clearInterval(backwardInterval);
+						if (typeof callback == 'function') {
+							intervalCounter = 0;
+							callback();
+						};
+
+					} else {
+						var coor = [
+							forwardCoor[intervalCounter],
+							forwardCoor[intervalCounter + 1]
+						];
+						var markerCoor = forwardCoor[intervalCounter+1];
+
+						marker.setPosition(markerCoor);
+
+						routes = new google.maps.Polyline({
+							path: coor,
+							geodesic: true,
+							strokeColor: '#e5002b',
+							strokeOpacity: 1.0,
+							strokeWeight: 12,
+							zIndex: 20
+						});
+						routes.setMap(map);
+						
+						var centerLatLng = new google.maps.LatLng(
+							forwardCoor[intervalCounter].lat,
+							forwardCoor[intervalCounter].lng);
+
+						console.log(centerLatLng);
+						map.setCenter(centerLatLng);
+
+						intervalCounter++;
+					}
+				}
+				
+				var startBackward = function() {
+					backwardInterval = setInterval(function(){drawBackwardPaths();}, 500);
+				}
+
+				// Draw backward paths
+				var drawBackwardPaths = function() {
+					// If we have gone through all of itmes, stop
+					if (intervalCounter >= backwardCoor.length) {
+						clearInterval(backwardInterval);
+					} else {
+						var coor = [
+							backwardCoor[intervalCounter],
+							backwardCoor[intervalCounter + 1]
+						];
+						var backwardMakerCoor = backwardCoor[intervalCounter+1];
+						marker.setPosition(backwardMakerCoor);
+
+						routes = new google.maps.Polyline({
+							path: coor,
+							geodesic: true,
+							strokeColor: '#5cb85c',
+							strokeOpacity: 1.0,
+							strokeWeight: 11,
+							zIndex: 20
+						});
+						routes.setMap(map);
+						intervalCounter++;
+					}
+				}
+			});
+		});
+
+		$(document).ready(function() {
+			// Hide parcel info on passenger-only request
+			var url = window.location.href;
+			if (url.indexOf('#nopackage') > 1) {
+				$('#parcel-info').css('display', 'none');				
+			}
+		});
+	</script>
+</body>
+</html>
