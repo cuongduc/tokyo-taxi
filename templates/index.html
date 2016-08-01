@@ -81,30 +81,23 @@
 				<div class="row" id="search" style="display:block;">
 					<form action="/directions" class="form">
 						<div class="form-group">
-							<label for="">Điểm đầu</label>
+							<label for="">Start</label>
 							<input type="text" class="form-control" value="Vị trí của bạn">
 						</div>
 						<div class="form-group">
-							<label for="request">Điểm đến</label>
+							<label for="request">Destination</label>
 							<input type="text" value="{{ parcel.parcel_place }}" class="form-control" name="parcel_place" id="parcel_place">
-							{# <select name="request" id="request" class="form-control">
-								<option value="16805">16805 - Parcel</option>
-								<option value="8909">8909 - Passenger</option>
-								<option value="12958">12958 - Parcel</option>
-								<option value="3579">3579 - Passenger</option>	
-								<option value="250">250 - Passenger</option>	
-							</select> #}
 						</div>
 						<div class="form-group">
-							<label for="time">Thời gian</label>
+							<label for="time">Time</label>
 							<input type="date" name="time" class="form-control" id="request_time">
 						</div>
 						<div class="form-group">
-							<label for="note">Ghi chú</label>
-							<textarea name="note" id="note" cols="30" rows="5" class="form-control" placeholder="Nếu bạn có yêu cầu đặc biệt gì, vui lòng viết tại đây!"></textarea>
+							<label for="note">Note</label>
+							<textarea name="note" id="note" cols="30" rows="5" class="form-control" placeholder="If you have any requirements, please write down here!"></textarea>
 						</div>
-						<button type="button" id="getDirectionButton" class="btn btn-success">Tìm đường</button>
-						<a href="/" class="btn btn-default">Quay lại trang chủ</a>
+						<button type="button" id="getDirectionButton" class="btn btn-success">Find route</button>
+						<a href="/" class="btn btn-default">QBack to homepage</a>
 					</form>
 
 					<div class="panel">
@@ -121,45 +114,45 @@
 				<div class="row" id="result" style="display: none;">
 					<ul class="list-group">
 						<li>
-							<h3><span class="label label-success" id="notification">Chúc mừng bạn đã lên đường</span></h3>
+							<h3><span class="label label-success" id="notification">Congratulations! You're now onboarding</span></h3>
 						</li>
 						<li class="list-group-item" id="route-cost">
-							<h3>Giá: <strong style="color:#e5002b;">45.000 VNĐ</strong></h3>
-							<h3 style="text-align:center; color:orange;">Tiết kiệm <strong id="saving"></strong></h3>
-							<p>Thời gian đón: <strong id="pick-time"></strong></p>
-							<p>Thời gian đến: <strong id="arrive-time"></strong></p>
-							<p>Quãng đường: <strong id="route-distance"></strong></p>
+							<h3>Ptice: <strong style="color:#e5002b;">45.000 VNĐ</strong></h3>
+							<h3 style="text-align:center; color:orange;">Saving <strong id="saving"></strong></h3>
+							<p>Pick up time: <strong id="pick-time"></strong></p>
+							<p>Arrival time: <strong id="arrive-time"></strong></p>
+							<p>Distance: <strong id="route-distance"></strong></p>
 
 						</li>
 						<li class="list-group-item" id="taxi-info">
-							<h5><strong>Thông tin xe</strong></h5>
-							<p><span>Biển số taxi: </span><strong id="taxi_no">30A-993.60</strong></p>
-							<p><span>Tài xế: </span><strong id="taxi_driver">Phạm Trường Vinh</strong></p>
-							<p><span>SĐT: </span><strong id="taxi_phone">0989 258 226</strong></p>
+							<h5><strong>TCar's information</strong></h5>
+							<p><span>Taxi number: </span><strong id="taxi_no">30A-993.60</strong></p>
+							<p><span>Driver: </span><strong id="taxi_driver">Phạm Trường Vinh</strong></p>
+							<p><span>Phone: </span><strong id="taxi_phone">0989 258 226</strong></p>
 							<p>Rarting: <img src="http://styleangel.ie/wp-content/uploads/2013/04/3060.5star.png-610x0.png" style="height: 25px; width: auto;" alt=""></p>
 							<p class="pull-right">
 
-								<a href=""><small>Xem đánh giá</small></a>
+								<a href=""><small>See more reviews</small></a>
 							</p>
 							<div class="clearfix"></div>
 						</li>
 						<li class="list-group-item" id="parcel-info">
-							<h5><strong>Hàng hóa : <span class="parcel-id">3</span></strong></h5>
+							<h5><strong>Parcel : <span class="parcel-id">3</span></strong></h5>
 							<ul>
-								<li>Loại hàng hóa: <strong>{{ parcel.parcel_type }}</strong></li>
-								<li>Khối lượng: <strong>{{ parcel.parcel_weight }}</strong></li>
-								<li>Kích thước: <strong>{{ parcel.parcel_dimension }}</strong></li>
-								<li>Thời gian nhận hàng: <strong>{{ parcel.parcel_arrive_time }}</strong></li>
+								<li>Parcel type: <strong>{{ parcel.parcel_type }}</strong></li>
+								<li>Weight: <strong>{{ parcel.parcel_weight }}</strong></li>
+								<li>Dimension: <strong>{{ parcel.parcel_dimension }}</strong></li>
+								<li>Deliver time: <strong>{{ parcel.parcel_arrive_time }}</strong></li>
 							</ul>
 
 						</li>
 						<li class="list-group-item">
-							<button type="button" class="btn btn-success" id="go">Lên xe</button>
+							<button type="button" class="btn btn-success" id="go">go</button>
 
-							<button type="button" class="btn btn-default" id="back-to-search">Quay lại</button>
+							<button type="button" class="btn btn-default" id="back-to-search">Back</button>
 						</li>
 					</ul>
-					<h4>Danh sách Taxi</h4>
+					<h4>Taxi list</h4>
 					<ul id="taxis-list" style="max-height: 300px; overflow-y: scroll;"></ul>
 
 					<div class="panel">
@@ -182,13 +175,13 @@
 		</div>
 		
 		<!-- Content -->
-		<div id="car-info" title="Thông tin xe" style="display:none;">
-			<p><span>Thời gian đón: </span><strong id="pickup_time"></strong></p>
-			<p><span>Thời gian đến: </span><strong id="arrival_time"></strong></p>
-			<p><span>Biển số taxi: </span><strong id="taxi_no">30A-993.60</strong></p>
-			<p><span>Tài xế: </span><strong id="taxi_driver">Phạm Trường Vinh</strong></p>
-			<p><span>SĐT: </span><strong id="taxi_phone">0989 258 226</strong></p>
-			<p><span>Chở: </span><strong id="taxi_carry"></strong></p>
+		<div id="car-info" title="Car information" style="display:none;">
+			<p><span>Pickup time: </span><strong id="pickup_time"></strong></p>
+			<p><span>Arrival time: </span><strong id="arrival_time"></strong></p>
+			<p><span>Taxi number: </span><strong id="taxi_no">30A-993.60</strong></p>
+			<p><span>Driver: </span><strong id="taxi_driver">Phạm Trường Vinh</strong></p>
+			<p><span>Phone: </span><strong id="taxi_phone">0989 258 226</strong></p>
+			<p><span>Carry: </span><strong id="taxi_carry"></strong></p>
 		</div>
 	</div>
 
