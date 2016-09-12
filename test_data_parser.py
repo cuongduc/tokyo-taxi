@@ -1,30 +1,40 @@
-from data_parser import read_data, read_request_data, read_taxi_info
-import json
-import time
-# points, vertices = read_data()
-read_data()
-start = time.time()
-common = read_taxi_info()
-done = time.time()
-elapsed = done - start
-print(common)
-print(elapsed)
+import urllib2
 
-# synthesized_vertices = []
 
-# for vertex in vertices:
-# 	item = {
-# 		'type': vertex['type'],
-# 		'start' : {
-# 			'lat' : points[vertex['start']]['lat'],
-# 			'lng' : points[vertex['start']]['lng']
-# 		},
-# 		'end' : {
-# 			'lat' : points[vertex['end']]['lat'],
-# 			'lng' : points[vertex['end']]['lng']
-# 		}
-# 	}
+SERVICE_PATH = 'http://108.61.200.110:8080/SRAP/webresources/welcome?requeststring=11596+0+12766+7521+43509+67061+43509+67061+213840.0'
 
-# 	synthesized_vertices.append(item)
+print(SERVICE_PATH)
 
-# print(json.dumps(synthesized_vertices))
+response = urllib2.urlopen(SERVICE_PATH)
+result = response.read()
+
+result_set = result.split('\n')
+result_set.pop() # remove last element as it's empty
+
+is_forwarding = True
+is_carrying_passenger = False
+forward_path = []
+backward_path = []
+
+for line in result_set:
+    item = line.split(' ')
+    if 'R+' in line:
+        is_forwarding = True
+        if 'true' in item:
+            is_carrying_passenger = True
+        else:
+            is_carrying_passenger = False
+    elif 'R-' in line:
+        is_forwarding = False
+        if 'true' in item:
+            is_carrying_passenger = True
+        else:
+            is_carrying_passenger = False
+    else:
+        if is_forwarding:
+            forward_path.append(item[0])
+        else:
+            backward_path.append(item[0])
+
+print('Forward', forward_path)
+print('Backward', backward_path)
