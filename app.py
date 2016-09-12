@@ -87,12 +87,15 @@ def get_taxi_info():
 
 @app.route('/directions', methods=['POST'])
 def get_directions_for_request():
-    request_list = [16805, 8909, 12958, 3579, 250]
-    rid = random.choice(request_list)
-    # rid = request.form['request']
-    # rid = int(rid)
-    r = read_request_data(rid)
-    return jsonify(data=r)
+    pass
+# def get_directions_for_request():
+#     # request_list = [16805, 8909, 12958, 3579, 250]
+#     request_list = [250]
+#     rid = random.choice(request_list)
+#     # rid = request.form['request']
+#     # rid = int(rid)
+#     r = read_request_data(rid)
+#     return jsonify(data=r)
 
 
 @app.route('/all_directions', methods=['POST'])
@@ -116,6 +119,12 @@ def persist_parcel_request_data(parcel):
     f.writelines("PARCEL_PLACE='" + str(parcel['parcel_place']) + "'\n")
 
     f.close()
+
+
+@app.route('/test', methods=['GET'])
+def test():
+    return render_template('test.html')
+
 
 if __name__ == '__main__':
     app.debug = True

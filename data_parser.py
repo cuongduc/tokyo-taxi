@@ -165,19 +165,6 @@ def read_request_data(sid, all=None):
         for re in requests:
             if re['id'] == sid:
                 return re
+
+    print(request)
     return request
-
-def read_all_request_data():
-    input_file = 'data/outputByTime_05_09_08_43_58.txt'
-
-    if not os.path.isfile(input_file):
-        return False
-
-    f = open(input_file, 'r')
-
-    requests = []
-    request = {}
-    flow = 'forward'
-    new_request = False
-
-    points, _ = read_data()
