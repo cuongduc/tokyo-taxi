@@ -257,8 +257,6 @@
 
 		}
 
-		var directionsService;
-		var directionDisplay;
 		var startPoint;
 		var endPoint;
 
@@ -288,117 +286,117 @@
 			var startInput = document.getElementById('start-point');
 			var startSearchBox = new google.maps.places.SearchBox(startInput);
 			// map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-			map.controls.push(startInput);
+			// map.controls.push(startInput);
 
 			var endInput = document.getElementById('parcel_place');
 			var endSearchBox = new google.maps.places.SearchBox(endInput);
-			map.controls.push(endInput);
+			// map.controls.push(endInput);
 
          	var markers = [];
-         	directionsService = new google.maps.DirectionsService();
-         	directionDisplay = new google.maps.DirectionsRenderer();
+         	window.directionsService = new google.maps.DirectionsService();
+         	window.directionDisplay = new google.maps.DirectionsRenderer();
 
 			// Bias the SearchBox results towards current map's viewport.
-			map.addListener('bounds_changed', function() {
-			  startSearchBox.setBounds(map.getBounds());
-			  endSearchBox.setBounds(map.getBounds());
-			});
+			// map.addListener('bounds_changed', function() {
+			//   startSearchBox.setBounds(map.getBounds());
+			//   endSearchBox.setBounds(map.getBounds());
+			// });
 
 			// Listen for the event fired when the user selects a prediction and retrieve
 			// more details for that place.
-			startSearchBox.addListener('places_changed', function() {
-			  var places = startSearchBox.getPlaces();
-			  window.startPoint = places;
+			// startSearchBox.addListener('places_changed', function() {
+			//   var places = startSearchBox.getPlaces();
+			//   window.startPoint = places;
 
-			  if (places.length == 0) {
-			    return;
-			  }
+			//   if (places.length == 0) {
+			//     return;
+			//   }
 
-			  // Clear out the old markers.
-			  // markers.forEach(function(marker) {
-			  //   marker.setMap(null);
-			  // });
+			//   // Clear out the old markers.
+			//   // markers.forEach(function(marker) {
+			//   //   marker.setMap(null);
+			//   // });
 
-			  // For each place, get the icon, name and location.
-			  var bounds = new google.maps.LatLngBounds();
-			  places.forEach(function(place) {
-			    if (!place.geometry) {
-			      console.log("Returned place contains no geometry");
-			      return;
-			    }
-			    var icon = {
-			      url: place.icon,
-			      size: new google.maps.Size(71, 71),
-			      origin: new google.maps.Point(0, 0),
-			      anchor: new google.maps.Point(17, 34),
-			      scaledSize: new google.maps.Size(25, 25)
-			    };
+			//   // For each place, get the icon, name and location.
+			//   var bounds = new google.maps.LatLngBounds();
+			//   places.forEach(function(place) {
+			//     if (!place.geometry) {
+			//       console.log("Returned place contains no geometry");
+			//       return;
+			//     }
+			//     var icon = {
+			//       url: place.icon,
+			//       size: new google.maps.Size(71, 71),
+			//       origin: new google.maps.Point(0, 0),
+			//       anchor: new google.maps.Point(17, 34),
+			//       scaledSize: new google.maps.Size(25, 25)
+			//     };
 
-			    // Create a marker for each place.
-			    markers.push(new google.maps.Marker({
-			      map: map,
-			      icon: icon,
-			      title: place.name,
-			      position: place.geometry.location
-			    }));
+			//     // Create a marker for each place.
+			//     markers.push(new google.maps.Marker({
+			//       map: map,
+			//       icon: icon,
+			//       title: place.name,
+			//       position: place.geometry.location
+			//     }));
 
-			    if (place.geometry.viewport) {
-			      // Only geocodes have viewport.
-			      bounds.union(place.geometry.viewport);
-			    } else {
-			      bounds.extend(place.geometry.location);
-			    }
-			  });
-			  map.fitBounds(bounds);
-			});
+			//     if (place.geometry.viewport) {
+			//       // Only geocodes have viewport.
+			//       bounds.union(place.geometry.viewport);
+			//     } else {
+			//       bounds.extend(place.geometry.location);
+			//     }
+			//   });
+			//   map.fitBounds(bounds);
+			// });
 
-			endSearchBox.addListener('places_changed', function() {
-			  var places = startSearchBox.getPlaces();
-			  window.endPoint = places;
+			// endSearchBox.addListener('places_changed', function() {
+			//   var places = startSearchBox.getPlaces();
+			//   window.endPoint = places;
 
-			  if (places.length == 0) {
-			    return;
-			  }
+			//   if (places.length == 0) {
+			//     return;
+			//   }
 
-			  // Clear out the old markers.
-			  // markers.forEach(function(marker) {
-			  //   marker.setMap(null);
-			  // });
+			//   // Clear out the old markers.
+			//   // markers.forEach(function(marker) {
+			//   //   marker.setMap(null);
+			//   // });
 
-			  // For each place, get the icon, name and location.
-			  var bounds = new google.maps.LatLngBounds();
-			  places.forEach(function(place) {
-			    if (!place.geometry) {
-			      console.log("Returned place contains no geometry");
-			      return;
-			    }
-			    var icon = {
-			      url: place.icon,
-			      size: new google.maps.Size(75, 75),
-			      origin: new google.maps.Point(0, 0),
-			      anchor: new google.maps.Point(17, 34),
-			      scaledSize: new google.maps.Size(25, 25)
-			    };
+			//   // For each place, get the icon, name and location.
+			//   var bounds = new google.maps.LatLngBounds();
+			//   places.forEach(function(place) {
+			//     if (!place.geometry) {
+			//       console.log("Returned place contains no geometry");
+			//       return;
+			//     }
+			//     var icon = {
+			//       url: place.icon,
+			//       size: new google.maps.Size(75, 75),
+			//       origin: new google.maps.Point(0, 0),
+			//       anchor: new google.maps.Point(17, 34),
+			//       scaledSize: new google.maps.Size(25, 25)
+			//     };
 
-			    // Create a marker for each place.
-			    markers.push(new google.maps.Marker({
-			      map: map,
-			      icon: icon,
-			      title: place.name,
-			      position: place.geometry.location
-			    }));
+			//     // Create a marker for each place.
+			//     markers.push(new google.maps.Marker({
+			//       map: map,
+			//       icon: icon,
+			//       title: place.name,
+			//       position: place.geometry.location
+			//     }));
 
-			    if (place.geometry.viewport) {
-			      // Only geocodes have viewport.
-			      bounds.union(place.geometry.viewport);
-			    } else {
-			      bounds.extend(place.geometry.location);
-			    }
-			  });
-			  map.fitBounds(bounds);
-			});
+			//     if (place.geometry.viewport) {
+			//       // Only geocodes have viewport.
+			//       bounds.union(place.geometry.viewport);
+			//     } else {
+			//       bounds.extend(place.geometry.location);
+			//     }
+			//   });
+			//   map.fitBounds(bounds);
+			// });
 
-			directionDisplay.setMap(map);
+			window.directionDisplay.setMap(map);
 		}
 
 
@@ -598,74 +596,109 @@
 						request: id
 					}
 				})
+				.complete(function() {})
 				.success(function(response) {
 
-					// Write log
-					var el = $('.logs');
-						
-					if (response) {
-						console.log(response);
-						setParcelText(response.data.id);
+					if (response.data && response.data.length) {
+						var rawForwardData = response.data[0];
+						var rawBackwardData = response.data[1];
 
-						if (response.data.type == 'parcel') {
-							markerImage = 'http://i1156.photobucket.com/albums/p561/davidphamtran/parcel_zpsfcwsbgg5.png';
-							$('#taxi_carry').text('Hàng hóa');
-						} else {
-							markerImage = 'http://i1156.photobucket.com/albums/p561/davidphamtran/people_zpsyojlduvx.png';
-							$('#taxi_carry').text('Hành khách');
-						}
-
-						for (var i = 0; i < response.data.forward.length; i++) {
-							forwardCoor.push({
-								lat: response.data.forward[i].lat,
-								lng: response.data.forward[i].lng,
-								time: response.data.forward[i].time
-							});
-							var line = '<li><strong>RESPONSE</strong> Segment: <code>{start: (' + response.data.forward[i].lat + ',' + response.data.forward[i].lng + ')</code></li>';
-
-							el.append(line);
-						}
-
-						forward = new google.maps.Polyline({
-							path: forwardCoor,
-							geodesic: true,
-							strokeColor: '#000000',
-							strokeOpacity: 1.0,
-							strokeWeight: 10
+						var forwardPath = new Object({
+							isCarryingPassenger: rawForwardData.is_carrying_passenger,
+							points: makePathPointObjects(rawForwardData.points)
 						});
 
-						map.setCenter(forwardCoor[0]);
-						forward.setMap(map);
-
-						for (var j = 0; j < response.data.backward.length; j++) {
-							backwardCoor.push({
-								lat: response.data.backward[j].lat,
-								lng: response.data.backward[j].lng,
-								time: response.data.backward[j].time
-							});
-
-							var line = '<li><strong>RESPONSE</strong> Segment: <code>{end: (' + response.data.backward[j].lat + ',' + response.data.backward[j].lng + ')}</code></li>';
-
-							el.append(line);
-						}
-
-						backward = new google.maps.Polyline({
-							path: backwardCoor,
-							geodesic: true,
-							strokeColor: '#FF5722',
-							strokeOpacity: 1.0,
-							strokeWeight: 6
+						var backwardPath = new Object({
+							isCarryingPassenger: rawBackwardData.is_carrying_passenger,
+							points: makePathPointObjects(rawBackwardData.points)
 						});
 
-						backward.setMap(map);
-						map.setZoom(15);
-						getTime();
 						
-						var line = '<li><strong>RESPONSE</strong> Segment: <code>{start: (' + start.lat + ',' + start.lng + ') end: (' + end.lat + ',' + end.lng + ')}</code></li>';
-
-						el.append(line);
-
 					}
+
+					console.log(forwardPath);
+					console.log(backwardPath);
+
+					// ==========================================
+					// Get detailed directions between points
+					// ==========================================
+					for (var i = 0; i < forwardPath.points.length - 2; i++) {
+						var start = new google.maps.LatLng(forwardPath.points[i].lat, forwardPath.points[i].lng);
+						var end = new google.maps.LatLng(forwardPath.points[i+1].lat, forwardPath.points[i+1].lng);
+						console.log('Start point', start);
+						console.log('End point', end);
+						var request = {
+							origin: start,
+							destination: end,
+							travelMode: 'DRIVING'
+						}
+
+						window.directionsService.route(request, function(result, status) {
+							if (status == 'OK') {
+								window.directionDisplay.setDirections(result);
+							} else {
+								console.log(status);
+							}
+						})
+					}
+					// // Write log
+					// var el = $('.logs');
+						
+					// if (response) {
+					// 	console.log(response);
+					// 	setParcelText(response.data.id);
+
+					// 	if (response.data.type == 'parcel') {
+					// 		markerImage = 'http://i1156.photobucket.com/albums/p561/davidphamtran/parcel_zpsfcwsbgg5.png';
+					// 		$('#taxi_carry').text('Hàng hóa');
+					// 	} else {
+					// 		markerImage = 'http://i1156.photobucket.com/albums/p561/davidphamtran/people_zpsyojlduvx.png';
+					// 		$('#taxi_carry').text('Hành khách');
+					// 	}
+
+					// 	for (var i = 0; i < response.data.forward.length; i++) {
+					// 		forwardCoor.push({
+					// 			lat: response.data.forward[i].lat,
+					// 			lng: response.data.forward[i].lng,
+					// 			time: response.data.forward[i].time
+					// 		});
+					// 		var line = '<li><strong>RESPONSE</strong> Segment: <code>{start: (' + response.data.forward[i].lat + ',' + response.data.forward[i].lng + ')</code></li>';
+
+					// 		el.append(line);
+					// 	}
+
+					// var forward = new google.maps.Polyline({
+					// 		path: forwardPath.points,
+					// 		geodesic: true,
+					// 		strokeColor: '#000000',
+					// 		strokeOpacity: 1.0,
+					// 		strokeWeight: 10
+					// 	});
+
+					// // 	map.setCenter(forwardCoor[0]);
+					// forward.setMap(map);
+					// console.log(forward);
+
+					// 	for (var j = 0; j < response.data.backward.length; j++) {
+					// 		backwardCoor.push({
+					// 			lat: response.data.backward[j].lat,
+					// 			lng: response.data.backward[j].lng,
+					// 			time: response.data.backward[j].time
+					// 		});
+
+					// 		var line = '<li><strong>RESPONSE</strong> Segment: <code>{end: (' + response.data.backward[j].lat + ',' + response.data.backward[j].lng + ')}</code></li>';
+
+					// 		el.append(line);
+					// 	}
+
+					
+					// 	getTime();
+						
+					// 	var line = '<li><strong>RESPONSE</strong> Segment: <code>{start: (' + start.lat + ',' + start.lng + ') end: (' + end.lat + ',' + end.lng + ')}</code></li>';
+
+					// 	el.append(line);
+
+					// }
 				})
 				.error(function() {
 					console.log('error');
@@ -799,6 +832,21 @@
 					}
 				}
 			});
+
+			var makePathPointObjects = function(stringArray) {
+				var points = new Array();
+				for (var i = 0; i < stringArray.length; i++) {
+					var raw = stringArray[i];
+					var parsedObject = JSON.parse(raw);
+					var geometryObj = new Object({
+						lat: parsedObject.coordinates[0],
+						lng: parsedObject.coordinates[1],
+					});
+					points.push(geometryObj);
+				}
+
+				return points;
+			}
 		});
 
 		$(document).ready(function() {

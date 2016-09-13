@@ -1,14 +1,19 @@
 from flask import Flask, render_template, jsonify, request, redirect
+from flask.ext.sqlalchemy import SQLAlchemy
 from data_parser import read_data, read_request_data, read_taxi_info
 from forms import ParcelRequestForm
 from data.parcel_request import *
+from utils import *
 import sys
-import random
+# import random
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/tokyo_taxi'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
 # Define some terminated constant
 NEW_TAXI_ROUTE = '=='
@@ -87,7 +92,12 @@ def get_taxi_info():
 
 @app.route('/directions', methods=['POST'])
 def get_directions_for_request():
-    pass
+    # Get routes from remote webservice
+    forward_path, backward_path = request_route_from_webservice()
+    forward_path = serialize_points_list(db, forward_path)
+    backward_path = serialize_points_list(db, backward_path)
+
+    return jsonify(data=[forward_path, backward_path])
 # def get_directions_for_request():
 #     # request_list = [16805, 8909, 12958, 3579, 250]
 #     request_list = [250]
